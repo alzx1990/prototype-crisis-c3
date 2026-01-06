@@ -4,17 +4,24 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Incident } from '@/types/incident';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 interface IncidentCardProps {
   incident: Incident;
 }
 
 export function IncidentCard({ incident }: IncidentCardProps) {
+  const navigate = useNavigate();
+  
   const timeSince = (date: Date) => {
     const minutes = Math.floor((new Date().getTime() - date.getTime()) / 60000);
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
     return `${hours}h ${minutes % 60}m ago`;
+  };
+
+  const handleClick = () => {
+    navigate(`/incidents/${incident.id}`);
   };
 
   return (
@@ -24,6 +31,7 @@ export function IncidentCard({ incident }: IncidentCardProps) {
         "transition-all duration-200 hover:border-primary/50 cursor-pointer group",
         incident.severity === 'critical' && "blink-critical"
       )}
+      onClick={handleClick}
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
