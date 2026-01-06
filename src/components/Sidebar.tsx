@@ -6,7 +6,9 @@ import {
   Map, 
   FileText, 
   Settings,
-  Activity
+  Activity,
+  Target,
+  ListTodo
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useLocation } from 'react-router-dom';
@@ -22,6 +24,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
   { icon: AlertTriangle, label: 'Incidents', badge: 4, path: '/incidents' },
+  { icon: Target, label: 'Planning', path: '/planning' },
+  { icon: ListTodo, label: 'Tasks', path: '/tasks' },
   { icon: Users, label: 'Response Teams', path: '/teams' },
   { icon: Radio, label: 'Communications', path: '/comms' },
   { icon: Map, label: 'Situation Map', path: '/map' },
