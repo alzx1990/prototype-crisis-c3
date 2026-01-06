@@ -1,14 +1,15 @@
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { IncidentCard } from '@/components/IncidentCard';
-import { mockIncidents } from '@/data/mockIncidents';
+import { NewIncidentDialog } from '@/components/NewIncidentDialog';
+import { useLocalDatabase } from '@/hooks/useLocalDatabase';
+import { useNotifications } from '@/contexts/NotificationContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { 
   Plus, 
   Search, 
-  Filter, 
   ArrowUpDown,
   AlertTriangle
 } from 'lucide-react';
@@ -16,11 +17,14 @@ import { useState } from 'react';
 import { Incident, Severity, IncidentStatus } from '@/types/incident';
 
 export default function IncidentsPage() {
+  const { incidents, addIncident } = useLocalDatabase();
+  const { notifyNewIncident } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState<Severity | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<IncidentStatus | 'all'>('all');
+  const [showNewIncident, setShowNewIncident] = useState(false);
 
-  const filteredIncidents = mockIncidents.filter(incident => {
+  const filteredIncidents = incidents.filter(incident => {
     const matchesSearch = incident.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          incident.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSeverity = severityFilter === 'all' || incident.severity === severityFilter;
@@ -32,6 +36,11 @@ export default function IncidentsPage() {
   const sortedIncidents = [...filteredIncidents].sort((a, b) => 
     severityOrder[a.severity] - severityOrder[b.severity]
   );
+
+  const handleCreateIncident = (data: Omit<Incident, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newIncident = addIncident(data);
+    notifyNewIncident(newIncident);
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -49,7 +58,7 @@ export default function IncidentsPage() {
                 Track, manage, and resolve all active and historical incidents
               </p>
             </div>
-            <Button variant="critical" className="gap-2">
+            <Button variant="critical" className="gap-2" onClick={() => setShowNewIncident(true)}>
               <Plus className="h-4 w-4" />
               New Incident
             </Button>
@@ -85,8 +94,8 @@ export default function IncidentsPage() {
               >
                 <option value="all">All Statuses</option>
                 <option value="active">Active</option>
-                <option value="responding">Responding</option>
-                <option value="contained">Contained</option>
+                <option value="pending">Pending</option>
+                <option value="escalated">Escalated</option>
                 <option value="resolved">Resolved</option>
               </select>
               <Button variant="outline" size="icon">
@@ -98,7 +107,7 @@ export default function IncidentsPage() {
           {/* Stats Summary */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             {(['critical', 'high', 'medium', 'low'] as Severity[]).map(severity => {
-              const count = mockIncidents.filter(i => i.severity === severity).length;
+              const count = incidents.filter(i => i.severity === severity).length;
               return (
                 <div key={severity} className="p-4 rounded-lg bg-secondary/30 border border-border">
                   <div className="flex items-center justify-between">
@@ -124,6 +133,12 @@ export default function IncidentsPage() {
           )}
         </main>
       </div>
+
+      <NewIncidentDialog 
+        open={showNewIncident} 
+        onOpenChange={setShowNewIncident}
+        onSubmit={handleCreateIncident}
+      />
     </div>
   );
 }
