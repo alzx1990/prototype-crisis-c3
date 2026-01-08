@@ -43,10 +43,10 @@ const mockTeams: ResponseTeam[] = [
     currentAssignment: 'INC-2024-001 - MRT Tunnel Flooding',
     responseTime: '4 min',
     members: [
-      { id: 'm1', name: 'Cpt. Lim Wei Ming', role: 'Station Commander', status: 'deployed', contact: 'CH-1' },
-      { id: 'm2', name: 'Lt. Ahmad Razali', role: 'Section Leader', status: 'deployed', contact: 'CH-1' },
-      { id: 'm3', name: 'Sgt. David Koh', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
-      { id: 'm4', name: 'Cpl. Priya Nair', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
+      { id: 'm1', name: 'Lim Wei Ming', role: 'Station Commander', status: 'deployed', contact: 'CH-1' },
+      { id: 'm2', name: 'Ahmad Razali', role: 'Section Leader', status: 'deployed', contact: 'CH-1' },
+      { id: 'm3', name: 'David Koh', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
+      { id: 'm4', name: 'Priya Nair', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
     ]
   },
   {
@@ -58,9 +58,9 @@ const mockTeams: ResponseTeam[] = [
     currentAssignment: 'INC-2024-003 - Chemical Spill at Jurong Island',
     responseTime: '8 min',
     members: [
-      { id: 'm5', name: 'Maj. Tan Jia Hui', role: 'HAZMAT Commander', status: 'deployed', contact: 'CH-3' },
-      { id: 'm6', name: 'Cpt. Ravi Kumar', role: 'HAZMAT Specialist', status: 'deployed', contact: 'CH-3' },
-      { id: 'm7', name: 'Lt. Michelle Wong', role: 'Decon Officer', status: 'deployed', contact: 'CH-3' },
+      { id: 'm5', name: 'Tan Jia Hui', role: 'HAZMAT Commander', status: 'deployed', contact: 'CH-3' },
+      { id: 'm6', name: 'Ravi Kumar', role: 'HAZMAT Specialist', status: 'deployed', contact: 'CH-3' },
+      { id: 'm7', name: 'Michelle Wong', role: 'Decon Officer', status: 'deployed', contact: 'CH-3' },
     ]
   },
   {
@@ -71,9 +71,9 @@ const mockTeams: ResponseTeam[] = [
     location: 'Tanglin Police Division HQ',
     responseTime: '5 min',
     members: [
-      { id: 'm8', name: 'ASP Jason Lim', role: 'Duty Officer', status: 'available', contact: 'CH-4' },
-      { id: 'm9', name: 'Insp. Nurul Aisyah', role: 'Investigation Officer', status: 'available', contact: 'CH-4' },
-      { id: 'm10', name: 'Sgt. Marcus Tan', role: 'Patrol Officer', status: 'off-duty', contact: 'CH-4' },
+      { id: 'm8', name: 'Jason Lim', role: 'Duty Officer', status: 'available', contact: 'CH-4' },
+      { id: 'm9', name: 'Nurul Aisyah', role: 'Investigation Officer', status: 'available', contact: 'CH-4' },
+      { id: 'm10', name: 'Marcus Tan', role: 'Patrol Officer', status: 'off-duty', contact: 'CH-4' },
     ]
   },
   {
@@ -84,9 +84,9 @@ const mockTeams: ResponseTeam[] = [
     location: 'Police Cantonment Complex',
     responseTime: '10 min',
     members: [
-      { id: 'm11', name: 'Supt. Vincent Ng', role: 'SOC Commander', status: 'available', contact: 'CH-5' },
-      { id: 'm12', name: 'DSP Rachel Goh', role: 'Tactical Leader', status: 'available', contact: 'CH-5' },
-      { id: 'm13', name: 'Insp. Farhan Ibrahim', role: 'Specialist', status: 'available', contact: 'CH-5' },
+      { id: 'm11', name: 'Vincent Ng', role: 'SOC Commander', status: 'available', contact: 'CH-5' },
+      { id: 'm12', name: 'Rachel Goh', role: 'Tactical Leader', status: 'available', contact: 'CH-5' },
+      { id: 'm13', name: 'Farhan Ibrahim', role: 'Specialist', status: 'available', contact: 'CH-5' },
     ]
   },
   {
@@ -97,10 +97,10 @@ const mockTeams: ResponseTeam[] = [
     location: 'Nee Soon Camp',
     responseTime: '15 min',
     members: [
-      { id: 'm14', name: 'Maj. Kenneth Ong', role: 'CDG Commander', status: 'available', contact: 'CH-6' },
-      { id: 'm15', name: 'Cpt. Siti Aminah', role: 'NBC Specialist', status: 'available', contact: 'CH-6' },
-      { id: 'm16', name: 'Lt. Benjamin Lee', role: 'Decon Officer', status: 'available', contact: 'CH-6' },
-      { id: 'm17', name: '3SG Muthu Rajan', role: 'Specialist', status: 'off-duty', contact: 'CH-6' },
+      { id: 'm14', name: 'Kenneth Ong', role: 'CDG Commander', status: 'available', contact: 'CH-6' },
+      { id: 'm15', name: 'Siti Aminah', role: 'NBC Specialist', status: 'available', contact: 'CH-6' },
+      { id: 'm16', name: 'Benjamin Lee', role: 'Decon Officer', status: 'available', contact: 'CH-6' },
+      { id: 'm17', name: 'Muthu Rajan', role: 'Specialist', status: 'off-duty', contact: 'CH-6' },
     ]
   },
   {
@@ -111,9 +111,9 @@ const mockTeams: ResponseTeam[] = [
     location: 'Kranji Camp',
     responseTime: '12 min',
     members: [
-      { id: 'm18', name: 'Maj. Dr. Sarah Tan', role: 'Medical Officer', status: 'available', contact: 'CH-7' },
-      { id: 'm19', name: 'Cpt. Alvin Chua', role: 'Paramedic', status: 'available', contact: 'CH-7' },
-      { id: 'm20', name: '2SG Jenny Ong', role: 'Combat Medic', status: 'available', contact: 'CH-7' },
+      { id: 'm18', name: 'Sarah Tan', role: 'Medical Officer', status: 'available', contact: 'CH-7' },
+      { id: 'm19', name: 'Alvin Chua', role: 'Paramedic', status: 'available', contact: 'CH-7' },
+      { id: 'm20', name: 'Jenny Ong', role: 'Combat Medic', status: 'available', contact: 'CH-7' },
     ]
   },
   {
@@ -124,8 +124,8 @@ const mockTeams: ResponseTeam[] = [
     location: 'NEA Environment Building, Scotts Road',
     responseTime: '20 min',
     members: [
-      { id: 'm21', name: 'Dr. Wong Mei Ling', role: 'Environmental Officer', status: 'available', contact: 'CH-8' },
-      { id: 'm22', name: 'Eng. Rizwan Shah', role: 'Pollution Control', status: 'available', contact: 'CH-8' },
+      { id: 'm21', name: 'Wong Mei Ling', role: 'Environmental Officer', status: 'available', contact: 'CH-8' },
+      { id: 'm22', name: 'Rizwan Shah', role: 'Pollution Control', status: 'available', contact: 'CH-8' },
     ]
   },
   {
@@ -137,9 +137,9 @@ const mockTeams: ResponseTeam[] = [
     currentAssignment: 'INC-2024-001 - MRT Tunnel Flooding',
     responseTime: '10 min',
     members: [
-      { id: 'm23', name: 'Eng. Danny Lim', role: 'Emergency Engineer', status: 'deployed', contact: 'CH-9' },
-      { id: 'm24', name: 'Tech. Hafiz Abdullah', role: 'Water Systems Tech', status: 'deployed', contact: 'CH-9' },
-      { id: 'm25', name: 'Tech. Grace Chen', role: 'Drainage Specialist', status: 'deployed', contact: 'CH-9' },
+      { id: 'm23', name: 'Danny Lim', role: 'Emergency Engineer', status: 'deployed', contact: 'CH-9' },
+      { id: 'm24', name: 'Hafiz Abdullah', role: 'Water Systems Tech', status: 'deployed', contact: 'CH-9' },
+      { id: 'm25', name: 'Grace Chen', role: 'Drainage Specialist', status: 'deployed', contact: 'CH-9' },
     ]
   },
   {
@@ -151,9 +151,9 @@ const mockTeams: ResponseTeam[] = [
     currentAssignment: 'INC-2024-002 - Cyber Attack on Banking System',
     responseTime: '5 min',
     members: [
-      { id: 'm26', name: 'Dir. Kelvin Yeo', role: 'Incident Commander', status: 'deployed', contact: 'CH-10' },
-      { id: 'm27', name: 'Spec. Vanessa Loh', role: 'Threat Analyst', status: 'deployed', contact: 'CH-10' },
-      { id: 'm28', name: 'Eng. Arjun Menon', role: 'Security Engineer', status: 'deployed', contact: 'CH-10' },
+      { id: 'm26', name: 'Kelvin Yeo', role: 'Incident Commander', status: 'deployed', contact: 'CH-10' },
+      { id: 'm27', name: 'Vanessa Loh', role: 'Threat Analyst', status: 'deployed', contact: 'CH-10' },
+      { id: 'm28', name: 'Arjun Menon', role: 'Security Engineer', status: 'deployed', contact: 'CH-10' },
     ]
   },
 ];
