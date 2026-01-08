@@ -35,71 +35,125 @@ interface ResponseTeam {
 
 const mockTeams: ResponseTeam[] = [
   {
-    id: 'TEAM-001',
-    name: 'Alpha Fire Unit',
+    id: 'SCDF-001',
+    name: 'SCDF Central Fire Station',
     type: 'fire',
     status: 'deployed',
-    location: 'Grid Reference: 34.0522, -118.2437',
-    currentAssignment: 'INC-001 - Industrial Fire',
+    location: 'Central Fire Station, Hill Street',
+    currentAssignment: 'INC-2024-001 - MRT Tunnel Flooding',
     responseTime: '4 min',
     members: [
-      { id: 'm1', name: 'Capt. John Torres', role: 'Team Lead', status: 'deployed', contact: 'CH-1' },
-      { id: 'm2', name: 'Lt. Sarah Chen', role: 'Engineer', status: 'deployed', contact: 'CH-1' },
-      { id: 'm3', name: 'FF Mike Johnson', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
-      { id: 'm4', name: 'FF Lisa Park', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
+      { id: 'm1', name: 'Cpt. Lim Wei Ming', role: 'Station Commander', status: 'deployed', contact: 'CH-1' },
+      { id: 'm2', name: 'Lt. Ahmad Razali', role: 'Section Leader', status: 'deployed', contact: 'CH-1' },
+      { id: 'm3', name: 'Sgt. David Koh', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
+      { id: 'm4', name: 'Cpl. Priya Nair', role: 'Firefighter', status: 'deployed', contact: 'CH-1' },
     ]
   },
   {
-    id: 'TEAM-002',
-    name: 'Bravo Medical Unit',
-    type: 'medical',
-    status: 'available',
-    location: 'Station 12 - Central',
-    responseTime: '6 min',
-    members: [
-      { id: 'm5', name: 'Dr. Emily Watson', role: 'Medical Officer', status: 'available', contact: 'CH-2' },
-      { id: 'm6', name: 'Para. James Lee', role: 'Paramedic', status: 'available', contact: 'CH-2' },
-      { id: 'm7', name: 'EMT Alex Rivera', role: 'EMT', status: 'available', contact: 'CH-2' },
-    ]
-  },
-  {
-    id: 'TEAM-003',
-    name: 'Charlie HAZMAT',
+    id: 'SCDF-002',
+    name: 'SCDF HAZMAT Unit',
     type: 'hazmat',
-    status: 'standby',
-    location: 'Station 5 - Industrial',
+    status: 'deployed',
+    location: 'Jurong Fire Station, Jurong West',
+    currentAssignment: 'INC-2024-003 - Chemical Spill at Jurong Island',
     responseTime: '8 min',
     members: [
-      { id: 'm8', name: 'Sgt. Robert Kim', role: 'HAZMAT Lead', status: 'available', contact: 'CH-3' },
-      { id: 'm9', name: 'Spec. Anna Moore', role: 'Specialist', status: 'available', contact: 'CH-3' },
-      { id: 'm10', name: 'Tech. David Brown', role: 'Technician', status: 'off-duty', contact: 'CH-3' },
+      { id: 'm5', name: 'Maj. Tan Jia Hui', role: 'HAZMAT Commander', status: 'deployed', contact: 'CH-3' },
+      { id: 'm6', name: 'Cpt. Ravi Kumar', role: 'HAZMAT Specialist', status: 'deployed', contact: 'CH-3' },
+      { id: 'm7', name: 'Lt. Michelle Wong', role: 'Decon Officer', status: 'deployed', contact: 'CH-3' },
     ]
   },
   {
-    id: 'TEAM-004',
-    name: 'Delta Police Unit',
+    id: 'SPF-001',
+    name: 'SPF Tanglin Division',
     type: 'police',
-    status: 'deployed',
-    location: 'Grid Reference: 34.0195, -118.4912',
-    currentAssignment: 'INC-003 - Traffic Collision',
-    responseTime: '3 min',
+    status: 'available',
+    location: 'Tanglin Police Division HQ',
+    responseTime: '5 min',
     members: [
-      { id: 'm11', name: 'Sgt. Maria Garcia', role: 'Sergeant', status: 'deployed', contact: 'CH-4' },
-      { id: 'm12', name: 'Off. Chris Taylor', role: 'Officer', status: 'deployed', contact: 'CH-4' },
+      { id: 'm8', name: 'ASP Jason Lim', role: 'Duty Officer', status: 'available', contact: 'CH-4' },
+      { id: 'm9', name: 'Insp. Nurul Aisyah', role: 'Investigation Officer', status: 'available', contact: 'CH-4' },
+      { id: 'm10', name: 'Sgt. Marcus Tan', role: 'Patrol Officer', status: 'off-duty', contact: 'CH-4' },
     ]
   },
   {
-    id: 'TEAM-005',
-    name: 'Echo Search & Rescue',
-    type: 'search-rescue',
+    id: 'SPF-002',
+    name: 'SPF Special Operations Command',
+    type: 'police',
+    status: 'standby',
+    location: 'Police Cantonment Complex',
+    responseTime: '10 min',
+    members: [
+      { id: 'm11', name: 'Supt. Vincent Ng', role: 'SOC Commander', status: 'available', contact: 'CH-5' },
+      { id: 'm12', name: 'DSP Rachel Goh', role: 'Tactical Leader', status: 'available', contact: 'CH-5' },
+      { id: 'm13', name: 'Insp. Farhan Ibrahim', role: 'Specialist', status: 'available', contact: 'CH-5' },
+    ]
+  },
+  {
+    id: 'SAF-001',
+    name: 'SAF Chemical Defence Group',
+    type: 'hazmat',
+    status: 'standby',
+    location: 'Nee Soon Camp',
+    responseTime: '15 min',
+    members: [
+      { id: 'm14', name: 'Maj. Kenneth Ong', role: 'CDG Commander', status: 'available', contact: 'CH-6' },
+      { id: 'm15', name: 'Cpt. Siti Aminah', role: 'NBC Specialist', status: 'available', contact: 'CH-6' },
+      { id: 'm16', name: 'Lt. Benjamin Lee', role: 'Decon Officer', status: 'available', contact: 'CH-6' },
+      { id: 'm17', name: '3SG Muthu Rajan', role: 'Specialist', status: 'off-duty', contact: 'CH-6' },
+    ]
+  },
+  {
+    id: 'SAF-002',
+    name: 'SAF Medical Response Force',
+    type: 'medical',
     status: 'available',
-    location: 'Station 8 - Mountain',
+    location: 'Kranji Camp',
     responseTime: '12 min',
     members: [
-      { id: 'm13', name: 'Lead. Tom Wilson', role: 'SAR Lead', status: 'available', contact: 'CH-5' },
-      { id: 'm14', name: 'Spec. Kate Adams', role: 'K9 Handler', status: 'available', contact: 'CH-5' },
-      { id: 'm15', name: 'Tech. Ryan Scott', role: 'Technical Rescue', status: 'available', contact: 'CH-5' },
-      { id: 'm16', name: 'Med. Nina Patel', role: 'Field Medic', status: 'off-duty', contact: 'CH-5' },
+      { id: 'm18', name: 'Maj. Dr. Sarah Tan', role: 'Medical Officer', status: 'available', contact: 'CH-7' },
+      { id: 'm19', name: 'Cpt. Alvin Chua', role: 'Paramedic', status: 'available', contact: 'CH-7' },
+      { id: 'm20', name: '2SG Jenny Ong', role: 'Combat Medic', status: 'available', contact: 'CH-7' },
+    ]
+  },
+  {
+    id: 'NEA-001',
+    name: 'NEA Environmental Response',
+    type: 'hazmat',
+    status: 'available',
+    location: 'NEA Environment Building, Scotts Road',
+    responseTime: '20 min',
+    members: [
+      { id: 'm21', name: 'Dr. Wong Mei Ling', role: 'Environmental Officer', status: 'available', contact: 'CH-8' },
+      { id: 'm22', name: 'Eng. Rizwan Shah', role: 'Pollution Control', status: 'available', contact: 'CH-8' },
+    ]
+  },
+  {
+    id: 'PUB-001',
+    name: 'PUB Emergency Response',
+    type: 'search-rescue',
+    status: 'deployed',
+    location: 'PUB WaterHub, Toh Guan',
+    currentAssignment: 'INC-2024-001 - MRT Tunnel Flooding',
+    responseTime: '10 min',
+    members: [
+      { id: 'm23', name: 'Eng. Danny Lim', role: 'Emergency Engineer', status: 'deployed', contact: 'CH-9' },
+      { id: 'm24', name: 'Tech. Hafiz Abdullah', role: 'Water Systems Tech', status: 'deployed', contact: 'CH-9' },
+      { id: 'm25', name: 'Tech. Grace Chen', role: 'Drainage Specialist', status: 'deployed', contact: 'CH-9' },
+    ]
+  },
+  {
+    id: 'CSA-001',
+    name: 'CSA Cyber Response Team',
+    type: 'police',
+    status: 'deployed',
+    location: 'CSA Headquarters, Maxwell Road',
+    currentAssignment: 'INC-2024-002 - Cyber Attack on Banking System',
+    responseTime: '5 min',
+    members: [
+      { id: 'm26', name: 'Dir. Kelvin Yeo', role: 'Incident Commander', status: 'deployed', contact: 'CH-10' },
+      { id: 'm27', name: 'Spec. Vanessa Loh', role: 'Threat Analyst', status: 'deployed', contact: 'CH-10' },
+      { id: 'm28', name: 'Eng. Arjun Menon', role: 'Security Engineer', status: 'deployed', contact: 'CH-10' },
     ]
   },
 ];

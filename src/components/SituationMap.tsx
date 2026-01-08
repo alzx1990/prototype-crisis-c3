@@ -8,23 +8,24 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Key, AlertTriangle, Users, MapPin } from 'lucide-react';
 
-// Mock locations for incidents and response units
+// Singapore incident locations
 const incidentLocations = [
-  { id: 'INC-2024-001', lat: 40.7128, lng: -74.006, type: 'incident' },
-  { id: 'INC-2024-002', lat: 40.7589, lng: -73.9851, type: 'incident' },
-  { id: 'INC-2024-003', lat: 40.7282, lng: -73.7949, type: 'incident' },
-  { id: 'INC-2024-004', lat: 40.6892, lng: -74.0445, type: 'incident' },
-  { id: 'INC-2024-005', lat: 40.7484, lng: -73.9857, type: 'incident' },
+  { id: 'INC-2024-001', lat: 1.3006, lng: 103.8559, type: 'incident' }, // Bugis MRT
+  { id: 'INC-2024-002', lat: 1.2789, lng: 103.8536, type: 'incident' }, // Marina Bay Financial Centre
+  { id: 'INC-2024-003', lat: 1.2667, lng: 103.6833, type: 'incident' }, // Jurong Island
+  { id: 'INC-2024-004', lat: 1.3547, lng: 103.7760, type: 'incident' }, // Bukit Timah Hill
+  { id: 'INC-2024-005', lat: 1.3644, lng: 103.9915, type: 'incident' }, // Changi Airport T3
 ];
 
+// Singapore response units
 const responseUnits = [
-  { id: 'UNIT-001', name: 'Alpha Response', lat: 40.7200, lng: -74.010, status: 'responding' },
-  { id: 'UNIT-002', name: 'Cyber Response', lat: 40.7550, lng: -73.990, status: 'on-scene' },
-  { id: 'UNIT-003', name: 'HAZMAT Unit', lat: 40.7300, lng: -73.800, status: 'responding' },
-  { id: 'UNIT-004', name: 'Tech Response', lat: 40.6850, lng: -74.050, status: 'available' },
-  { id: 'UNIT-005', name: 'Facility Ops', lat: 40.7450, lng: -73.980, status: 'on-scene' },
-  { id: 'UNIT-006', name: 'Medical Team', lat: 40.7350, lng: -74.000, status: 'available' },
-  { id: 'UNIT-007', name: 'Fire Response', lat: 40.7100, lng: -73.995, status: 'responding' },
+  { id: 'SCDF-001', name: 'SCDF Central Fire Station', lat: 1.2930, lng: 103.8490, status: 'responding' },
+  { id: 'SCDF-002', name: 'SCDF HAZMAT Unit', lat: 1.3400, lng: 103.7060, status: 'on-scene' },
+  { id: 'SPF-001', name: 'SPF Tanglin Division', lat: 1.3050, lng: 103.8200, status: 'available' },
+  { id: 'SAF-001', name: 'SAF Chemical Defence', lat: 1.4100, lng: 103.8100, status: 'available' },
+  { id: 'PUB-001', name: 'PUB Emergency Response', lat: 1.3350, lng: 103.7430, status: 'responding' },
+  { id: 'CSA-001', name: 'CSA Cyber Response', lat: 1.2760, lng: 103.8450, status: 'on-scene' },
+  { id: 'NEA-001', name: 'NEA Environmental Response', lat: 1.3100, lng: 103.8360, status: 'available' },
 ];
 
 const getSeverityColor = (severity: string) => {
@@ -61,7 +62,7 @@ export function SituationMap() {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/dark-v11',
-      center: [-74.006, 40.7128],
+      center: [103.8198, 1.3521], // Singapore coordinates
       zoom: 11,
       pitch: 45,
       bearing: -17.6,
