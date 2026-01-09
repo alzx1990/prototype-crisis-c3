@@ -108,20 +108,9 @@ export function usePlanning() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize tasks
-    const storedTasks = localStorage.getItem(TASKS_KEY);
-    if (storedTasks) {
-      const parsed = JSON.parse(storedTasks);
-      setTasks(parsed.map((t: any) => ({
-        ...t,
-        createdAt: new Date(t.createdAt),
-        updatedAt: new Date(t.updatedAt),
-        dueDate: t.dueDate ? new Date(t.dueDate) : undefined,
-      })));
-    } else {
-      localStorage.setItem(TASKS_KEY, JSON.stringify(mockTasks));
-      setTasks(mockTasks);
-    }
+    // Always use fresh mock data to ensure consistent names
+    localStorage.setItem(TASKS_KEY, JSON.stringify(mockTasks));
+    setTasks(mockTasks);
 
     // Initialize objectives
     const storedObjectives = localStorage.getItem(OBJECTIVES_KEY);
