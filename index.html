@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crisis Ops – Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16232d;--mut:#5d6b76;--line:#d5dce1;--bg:#eef1f3;--navy:#1c3a4d;--blue:#1f6fd1;--amber:#d98a1b;--red:#c23b2e;--green:#2f8f4e}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font:14px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg);display:flex;flex-direction:column}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.top{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 12px;flex-wrap:wrap}
+.brand{font-weight:600;color:var(--navy);padding-right:8px}
+.nav{display:flex;overflow-x:auto}
+.nav button{background:none;border:0;border-bottom:3px solid transparent;padding:12px 10px;color:var(--mut)}
+.nav button.on{color:var(--navy);border-color:var(--blue);font-weight:600}
+.stat{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.chip{border:0;border-radius:3px;padding:3px 8px;font-size:11px;font-weight:600;text-align:left;line-height:1.2}
+.chip small{display:block;font-weight:400;opacity:.8}
+.L0{background:#d4ecdb;color:#1b5e33}.L1{background:#f8e3a6;color:#6b4a00}.L2{background:#f6c58d;color:#7a3d00}.L3{background:#f2b4ac;color:#7d1c12}
+.who{font-size:12px;color:var(--mut)}.who button{margin-left:6px}
+.badge{background:var(--red);color:#fff;border-radius:9px;padding:0 6px;font-size:11px}
+.sub{background:var(--navy);color:#fff;padding:6px 12px;display:flex;gap:10px;align-items:center;font-size:12px}
+.sub select{background:#fff;border-radius:3px;border:0;padding:3px}
+#main{flex:1;min-height:0;overflow:auto}
+.g3{display:grid;grid-template-columns:300px 1fr 290px;height:100%}
+.pan{background:#fff;overflow:auto;padding:12px;border-right:1px solid var(--line)}
+#map{position:relative;background:#cde4f2;min-height:440px}#map svg{display:block;width:100%;height:100%}.mi{position:absolute;left:10px;top:10px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:8px;max-width:240px;font-size:12px}.dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+h2{font-size:16px;margin:0 0 8px}h3{font-size:13px;margin:14px 0 6px}
+.tabs{display:flex;gap:4px;margin:8px 0;flex-wrap:wrap}
+.tabs button{border:0;background:#e6ebee;padding:5px 12px;border-radius:3px}.tabs button.on{background:var(--blue);color:#fff}
+.card{border:1px solid var(--line);border-radius:4px;padding:8px;margin-bottom:8px;cursor:pointer;background:#fff}
+.card.sel{border:2px solid var(--blue);padding:7px}
+.card b{display:block}.card .m{font-size:12px;color:var(--mut)}
+.tag{display:inline-block;background:#26333c;color:#fff;border-radius:3px;padding:1px 7px;font-size:11px;margin:4px 4px 4px 0}
+.tag.o{background:#b5651d}.tag.c{background:#6b7780}
+.bar{display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0}.bar i{display:block;height:9px;border-radius:2px}.bar span{width:150px;flex:none}
+.big{font-size:28px;font-weight:600;line-height:1}
+.pad{padding:14px;max-width:1200px;margin:auto}
+.two{display:grid;grid-template-columns:300px 1fr;gap:14px}
+.box{background:#fff;border:1px solid var(--line);border-radius:4px;padding:12px}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:#f4f6f7}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 2px}
+input[type=text],select.f,textarea{width:100%;border:1px solid var(--line);border-radius:3px;padding:6px;background:#fff}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:3px;padding:7px 14px}.btn.s{background:#fff;color:var(--ink);border:1px solid #9aa7af}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.st{border:0;border-radius:3px;padding:2px 10px;font-weight:600}
+.Pending{background:#f1d98b}.Assigned{background:#c9d4e6}.InProgress{background:#2f8f4e;color:#fff}.Done{background:#d4ecdb}
+.tl{border-left:2px solid #333;margin-left:60px;padding-left:16px}.tl div{position:relative;margin-bottom:14px}
+.tl div:before{content:'';position:absolute;left:-24px;top:3px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #333}
+.tl time{position:absolute;left:-92px;top:0;font-size:12px;color:var(--mut);width:56px;text-align:right}
+.msg{margin:6px 0;padding:6px 10px;background:#e6eef7;border-radius:6px;max-width:80%}.msg.me{background:#d9efe0;margin-left:auto}.msg small{color:var(--mut)}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#16232d;color:#fff;padding:8px 16px;border-radius:4px;display:none}
+#modal{position:fixed;inset:0;background:rgba(22,35,45,.55);display:none;overflow:auto;padding:20px;z-index:5}#modal .sheet{background:#fff;max-width:760px;margin:auto;padding:24px;border-radius:4px}#modal ul{padding-left:18px}@media print{#app,.ban,#toast,.noprint{display:none!important}#modal{position:static;background:none;padding:0}}
+.ban{background:#fff4d6;border-bottom:1px solid #e8d38d;text-align:center;font-size:12px;padding:3px}
+@media(max-width:860px){.g3{grid-template-columns:1fr;height:auto}#map{height:320px}.two{grid-template-columns:1fr}.stat{margin-left:0}}
+</style></head><body>
+<div class="ban">Prototype for demonstration. All data is fictional and stored only in your browser.</div>
+<div id="app"></div><div id="toast" role="status"></div><div id="modal" role="dialog" aria-label="Incident report"></div>
+<script>
+const KEY='crisisops-demo-v2',$=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ago=m=>new Date(Date.now()-m*60000).toISOString();
+const fmt=i=>new Date(i).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+const hm=i=>new Date(i).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+const SEV={P1:'#c23b2e',P2:'#d98a1b',P3:'#1f6fd1'},PRI=['P0','P1','P2','P3','P4'],PC=['#222','#c23b2e','#d98a1b','#2f8f4e','#bbb'];
+const DOM=['Emergency Housing','Structural Safety','Essential Services','Trees','Animals & Pets','Finance','Logistics','Manpower & Resources','Security','Public Communications'];
+const NAV=[['inc','Incidents'],['dash','Domains'],['rep','Reports'],['log','Ops Logs'],['aid','Staff Aids'],['task','Tasks & Requests'],['col','Collaborate']];
+const LV=['Green','Yellow','Orange','Red'];
+function seed(){return{
+inc:[
+{id:'OPS/20261028/0001',nat:'Structural Safety',title:'Structural crack at residential block',loc:'Block 12 Northgate Ave',ll:[1.4,103.83],sev:'P1',st:'Open',t:ago(150),cas:[0,1,2,1,3]},
+{id:'OPS/20261026/0001',nat:'Essential Services',title:'Burst water pipe at residential block',loc:'Block 48 Riverside View',ll:[1.29,103.8],sev:'P2',st:'Open',t:ago(2900),cas:[0,0,0,1,1]},
+{id:'OPS/20261020/0001',nat:'Emergency Housing',title:'Temporary shelter for displaced residents',loc:'Harbour Road Community Hall',ll:[1.32,103.9],sev:'P2',st:'Open',t:ago(11000),cas:[1,0,1,0,1]},
+{id:'OPS/20261019/0001',nat:'Trees',title:'Fallen tree blocking road',loc:'Ridge Expressway exit 6',ll:[1.38,103.75],sev:'P3',st:'Open',t:ago(12000),cas:[0,0,0,0,0]},
+{id:'OPS/20261018/0001',nat:'Animals & Pets',title:'Pets left behind in evacuated block',loc:'Block 12 Northgate Ave',ll:[1.395,103.85],sev:'P3',st:'Open',t:ago(1200),cas:[0,0,0,0,0]},
+{id:'OPS/20261018/0002',nat:'Security',title:'Crowd control at relief centre',loc:'Hillview Community Club',ll:[1.36,103.77],sev:'P2',st:'Open',t:ago(900),cas:[0,0,0,0,0]},
+{id:'OPS/20261018/0003',nat:'Finance',title:'Emergency repair funding approval',loc:'Head office',ll:[1.29,103.85],sev:'P3',st:'Open',t:ago(800),cas:[0,0,0,0,0]},
+{id:'OPS/20261018/0004',nat:'Public Communications',title:'Public advisory on affected blocks',loc:'Operations centre',ll:[1.33,103.86],sev:'P2',st:'Open',t:ago(600),cas:[0,0,0,0,0]},
+{id:'OPS/20261018/0005',nat:'Logistics',title:'Water distribution to affected residents',loc:'Depot A',ll:[1.35,103.71],sev:'P3',st:'Open',t:ago(500),cas:[0,0,0,0,0]},
+{id:'OPS/20261015/0001',nat:'Manpower & Resources',title:'Shortage of marshals at relief centre',loc:'Eastgate Relief Centre',ll:[1.43,103.77],sev:'P3',st:'Open',t:ago(18000),cas:[0,0,0,0,0]},
+{id:'OPS/20261002/0001',nat:'Essential Services',title:'Lift outage at elderly housing block',loc:'Block 7 Orchard Close',ll:[1.34,103.85],sev:'P3',st:'Closed',t:ago(40000),cas:[0,0,0,0,0]}],
+log:[
+{t:ago(10),inc:'OPS/20261028/0001',msg:'Incident updated by Operator 01',by:'System'},
+{t:ago(70),inc:'OPS/20261028/0001',msg:'Situation report submitted by Operator 01',by:'System'},
+{t:ago(110),inc:'OPS/20261028/0001',msg:'Situation report saved as draft by Operator 01',by:'System'},
+{t:ago(150),inc:'OPS/20261028/0001',msg:'Incident created by Operator 01',by:'System'},
+{t:ago(2880),inc:'OPS/20261026/0001',msg:'Incident created by Operator 02',by:'System'}],
+rep:[
+{id:'R-1',inc:'OPS/20261028/0001',tpl:'Situation Report',title:'Structural crack at residential block',level:'Major',details:'Crack observed along level 4 corridor. Area cordoned off.',status:'Pending Review',t:ago(70)},
+{id:'R-2',inc:'OPS/20261026/0001',tpl:'Generic Template',title:'Burst water pipe at residential block',level:'Moderate',details:'Water supply cut to 60 units.',status:'Approved',t:ago(2800)}],
+task:[
+{id:'HSE-REQ-001',fn:'Emergency Housing',inc:'OPS/20261028/0001',what:'Household HH-03 (5 persons, infant) to Harbour Hall',who:'Team East',pri:'High',st:'Assigned'},
+{id:'HSE-REQ-002',fn:'Emergency Housing',inc:'OPS/20261028/0001',what:'Household HH-04 (3 persons, wheelchair access)',who:'Team East',pri:'High',st:'In Progress'},
+{id:'HSE-REQ-003',fn:'Emergency Housing',inc:'OPS/20261028/0001',what:'Household HH-07 (2 persons, elderly)',who:'Unassigned',pri:'Medium',st:'Pending'},
+{id:'LOG-REQ-001',fn:'Logistics',inc:'OPS/20261026/0001',what:'Deliver 200 bottled water cartons',who:'Depot A',pri:'High',st:'In Progress'},
+{id:'MAN-REQ-001',fn:'Manpower & Resources',inc:'OPS/20261015/0001',what:'Deploy 6 marshals to relief centre',who:'Duty officer',pri:'Medium',st:'Pending'},
+{id:'FIN-REQ-001',fn:'Finance',inc:'OPS/20261028/0001',what:'Approve emergency repair contract',who:'Finance lead',pri:'Medium',st:'Pending'}],
+chat:{'OPS/20261028/0001':[{by:'Operator 01',txt:'Cordon in place at level 4. Waiting on structural engineer.',t:ago(60)},{by:'Engineer Lim',txt:'On site in 20 min. Please keep residents off the corridor.',t:ago(45)}]},
+bc:[{t:ago(30),txt:'Heavy rain expected 3pm to 6pm. Check drainage-related incidents.',by:'Operations Director'}],
+ind:[1,1,2,1],chk:{},nxt:7}}
+let tf=0,S=load(),view='inc',sel=null,flt='Open',aidCat='Structural Safety',tab='Emergency Housing',map=null;
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+sel=S.inc[0].id;
+const gi=id=>S.inc.find(i=>i.id===id),addLog=(inc,msg,by='System')=>{S.log.unshift({t:ago(0),inc,msg,by});save()};
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t.h);t.h=setTimeout(()=>t.style.display='none',2200)}
+const IND=['Threat level','Public health','Air quality','Weather'];
+function head(){return`<div class="top"><span class="brand">Crisis Ops</span>
+<nav class="nav" aria-label="Main">${NAV.map(([k,n])=>`<button data-a="nav" data-k="${k}" class="${view===k?'on':''}">${n}</button>`).join('')}</nav>
+<div class="stat">${IND.map((n,i)=>`<button class="chip L${S.ind[i]}" data-a="ind" data-i="${i}" title="Click to change level">${n}<small>${LV[S.ind[i]]}</small></button>`).join('')}</div>
+<div class="who">Operator – Admin <button class="btn s" data-a="nav" data-k="col">Alerts <span class="badge">${S.bc.length}</span></button> <button class="btn s" data-a="reset">Reset demo</button></div></div>`}
+function pick(){const o=S.inc.filter(i=>i.st==='Open');return`<div class="sub">Working on incident <select id="pick" aria-label="Select incident">${o.map(i=>`<option value="${i.id}" ${i.id===sel?'selected':''}>${i.id} – ${esc(i.title)}</option>`).join('')}</select></div>`}
+function bars(rows,col){const mx=Math.max(1,...rows.map(r=>r[1]));return rows.map((r,i)=>`<div class="bar"><span>${esc(r[0])}</span><i style="width:${r[1]/mx*100}px;background:${col[i%col.length]}"></i>${r[1]}</div>`).join('')}
+function vInc(){
+const list=S.inc.filter(i=>flt==='All'||i.st===flt),op=S.inc.filter(i=>i.st==='Open'),cur=gi(sel);
+const cas=[0,0,0,0,0];op.forEach(i=>i.cas.forEach((c,k)=>cas[k]+=c));
+const nat={};op.forEach(i=>nat[i.nat]=(nat[i.nat]||0)+1);
+return`<div class="g3"><aside class="pan"><h2>Incident list</h2><div class="tabs">${['Open','Closed','All'].map(f=>`<button data-a="flt" data-f="${f}" class="${flt===f?'on':''}">${f}</button>`).join('')}</div>
+<div class="m">Showing ${list.length} of ${S.inc.length}</div>
+${list.map(i=>`<div class="card ${i.id===sel?'sel':''}" tabindex="0" data-a="selinc" data-id="${i.id}"><b>${i.id}</b><span class="tag">${i.nat}</span><span class="tag ${i.st==='Open'?'o':'c'}">${i.st}</span><div>${esc(i.title)}</div><div class="m">${esc(i.loc)}<br>${fmt(i.t)} · ${S.task.filter(t=>t.inc===i.id&&t.st!=='Done').length} active tasks</div></div>`).join('')}
+<button class="btn" data-a="nav" data-k="rep">+ New incident</button></aside>
+<div id="map" role="img" aria-label="Map of Singapore with incident locations"></div>
+<aside class="pan"><h2>Situational picture</h2><div class="big">${op.length}</div><div class="m">open incidents</div>
+<h3>Casualties by priority (${cas.reduce((a,b)=>a+b,0)})</h3>${bars(PRI.map((p,i)=>[p,cas[i]]),PC)}
+<h3>Incident natures</h3>${bars(Object.entries(nat),['#1f6fd1','#c23b2e','#6a4fb3','#d98a1b','#2f8f4e'])}
+${cur?(()=>{const tk=S.task.filter(t=>t.inc===cur.id),dn=tk.filter(t=>t.st==='Done').length,ck=AID[cur.nat].chk,cd=ck.filter((_,i)=>S.chk[cur.id+':'+cur.nat+':'+i]).length;return`<h3>Selected incident</h3><div class="box"><b>${esc(cur.title)}</b><div class="m">${cur.nat} · ${esc(cur.loc)} · ${cur.sev} · ${cur.st}</div>
+<div class="m">Tasks: ${tk.length} (${dn} done) · Actions: ${cd} of ${ck.length} done</div>
+<div class="row"><button class="btn" data-a="inctasks">View tasks</button><button class="btn s" data-a="incaid">Staff aids</button><button class="btn s" data-a="genrep">Generate report</button></div>
+<div class="row"><button class="btn s" data-a="nav" data-k="log">Ops log</button><button class="btn s" data-a="toggle">${cur.st==='Open'?'Close incident':'Reopen incident'}</button></div></div>
+<h3>Actions required</h3>${ck.map((t,i)=>{const k=cur.id+':'+cur.nat+':'+i;return`<div class="bar"><label style="margin:0;color:var(--ink);flex:1"><input type="checkbox" data-a="chk" data-k="${k}" ${S.chk[k]?'checked':''}> ${t}</label><button class="btn s" data-a="mktask" data-t="${i}" title="Create a task from this action">+ Task</button></div>`}).join('')}`})():''}</aside></div>`}
+function mapInit(){const m=$('#map');if(!m)return;const W=980,H=560,X=lo=>(lo-103.58)/.49*W,Y=la=>(1.5-la)/.28*H,P=a=>a.map(p=>X(p[0]).toFixed(0)+','+Y(p[1]).toFixed(0)).join(' ');
+const isl=[[103.605,1.31],[103.64,1.355],[103.68,1.39],[103.74,1.44],[103.78,1.465],[103.84,1.45],[103.9,1.42],[103.96,1.39],[103.99,1.385],[104.03,1.355],[103.99,1.32],[103.93,1.30],[103.88,1.29],[103.85,1.265],[103.82,1.26],[103.77,1.26],[103.72,1.29],[103.66,1.29],[103.62,1.27]];
+const sen=[[103.82,1.25],[103.86,1.245],[103.85,1.238],[103.82,1.241]],ubin=[[103.95,1.415],[104.0,1.42],[104.0,1.408],[103.95,1.404]];
+const lbl=[['Woodlands',103.78,1.435],['Jurong',103.7,1.33],['Central',103.83,1.31],['Tampines',103.94,1.355],['Changi',103.99,1.335]];
+const L=S.inc.filter(i=>flt==='All'||i.st===flt),c=gi(sel);
+m.innerHTML=`<svg viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="#cde4f2"/><g fill="#eef2e6" stroke="#8aa09b" stroke-width="2"><polygon points="${P(isl)}"/><polygon points="${P(sen)}"/><polygon points="${P(ubin)}"/></g>
+${lbl.map(l=>`<text x="${X(l[1])}" y="${Y(l[2])}" font-size="15" fill="#6c7f86" text-anchor="middle">${l[0]}</text>`).join('')}
+<text x="30" y="${H-20}" font-size="14" fill="#6c7f86">Singapore (schematic map)</text>
+${L.map(i=>`<g tabindex="0" style="cursor:pointer" data-a="selinc" data-id="${i.id}"><title>${esc(i.title)}</title><circle cx="${X(i.ll[1])}" cy="${Y(i.ll[0])}" r="${i.id===sel?15:10}" fill="${SEV[i.sev]}" stroke="#fff" stroke-width="3"/>${i.id===sel?`<circle cx="${X(i.ll[1])}" cy="${Y(i.ll[0])}" r="23" fill="none" stroke="${SEV[i.sev]}" stroke-width="2"/>`:''}</g>`).join('')}</svg>`+(c?`<div class="mi"><b>${esc(c.nat)}</b><br>${c.id}<br>${esc(c.title)}<br>${esc(c.loc)}<br>${fmt(c.t)} · ${c.st}</div>`:'')}
+function vRep(){const r=S.rep;const o=S.inc.filter(i=>i.st==='Open');
+return`<div class="pad two"><div><h2>Report list</h2><div class="m">Total ${r.length} · Pending ${r.filter(x=>x.status==='Pending Review').length} · Approved ${r.filter(x=>x.status==='Approved').length}</div><div style="margin-top:8px">
+${r.map(x=>`<div class="card"><b>${x.id} · ${x.tpl}</b><div>${esc(x.title)}</div><div class="m">${gi(x.inc)?.id||''} · ${fmt(x.t)}</div><span class="tag ${x.status==='Approved'?'':'o'}">${x.status}</span>${x.status==='Pending Review'?`<button class="btn s" data-a="approve" data-id="${x.id}">Approve</button>`:''}</div>`).join('')}</div></div>
+<div class="box"><h2>Create new report</h2><label for="f-tpl">Template</label><select class="f" id="f-tpl"><option>Generic Template</option><option>Situation Report</option><option>Casualty Report</option></select>
+<label for="f-inc">Incident</label><select class="f" id="f-inc"><option value="">New incident</option>${o.map(i=>`<option value="${i.id}">${i.id} – ${esc(i.title)}</option>`).join('')}</select>
+<label for="f-title">Title</label><input type="text" id="f-title"><label for="f-nat">Incident nature (new incidents)</label><select class="f" id="f-nat">${DOM.map(n=>`<option>${n}</option>`).join('')}</select>
+<label for="f-loc">Location</label><input type="text" id="f-loc"><label for="f-lvl">Level of incident</label><select class="f" id="f-lvl"><option>Minor</option><option>Moderate</option><option>Major</option></select>
+<label for="f-det">Details of incident</label><textarea id="f-det" rows="4"></textarea>
+<div class="row"><button class="btn s" data-a="saverep" data-d="1">Save as draft</button><button class="btn" data-a="saverep">Submit report</button></div></div></div>`}
+function vLog(){const L=S.log.filter(l=>l.inc===sel),c=gi(sel);
+return pick()+`<div class="pad"><h2>${sel}</h2><div class="m" style="margin-bottom:12px">${esc(c?.title)}</div>
+<div class="box" style="margin-bottom:14px"><label for="nl">New ops log entry</label><input type="text" id="nl" placeholder="e.g. Engineer arrived on site"><div class="row"><button class="btn" data-a="addlog">Add entry</button></div></div>
+<div class="tl">${L.map(l=>`<div><time>${hm(l.t)}</time><b>${esc(l.by)}</b><br>${esc(l.msg)}<div class="m">${fmt(l.t)}</div></div>`).join('')||'<p>No entries yet. Add the first one above.</p>'}</div></div>`}
+const AID={
+'Emergency Housing':{cols:['Name','Unit','Special needs','Next of kin'],rows:[['Resident A','#07-07','None','Kin A'],['Resident B','#06-07','Elderly','Kin B'],['Resident C','#06-09','Infant','Kin C'],['Resident D','#07-11','Wheelchair access','Kin D']],chk:['Open temporary shelter','Register evacuees','Match households to shelters','Arrange transport','Provide meals and bedding'],btn:'Assign shelter'},
+'Structural Safety':{cols:['Engineer or team','Specialty','Availability','Phone'],rows:[['Engineer 1','Concrete and cracks','Available','555-0301'],['Engineer 2','Foundations','On site','555-0302'],['Team S3','Shoring and propping','Available','555-0303']],chk:['Cordon off affected area','Evacuate adjacent units','Call structural engineer','Shut off gas and electricity','Photograph and measure cracks','Install monitoring gauges'],btn:'Deploy to incident'},
+'Essential Services':{cols:['Essential firm','Expertise','Contact','Phone'],rows:[['Company A','Lift rescue and repair','Contact 1','555-0101'],['Company B','Generator supplier','Contact 2','555-0102'],['Company C','Mobile crane and operator','Contact 3','555-0103'],['Company E','Temporary water tanks','Contact 5','555-0105']],chk:['Isolate affected utility','Notify utility provider','Arrange temporary supply','Inform affected residents'],btn:'Attach to incident'},
+'Trees':{cols:['Contractor','Equipment','Zone','Phone'],rows:[['Arborist Co 1','Chainsaw crew and chipper','North','555-0401'],['Arborist Co 2','Crane and cherry picker','East','555-0402'],['Parks team','Debris truck','Central','555-0403']],chk:['Cordon fallen tree','Check for utility lines','Dispatch tree crew','Clear and reopen road','Assess nearby trees'],btn:'Dispatch crew'},
+'Animals & Pets':{cols:['Animal or pet','Species','Location','Owner or carer'],rows:[['Biscuit','Dog','Block 12 #05-03','Resident B'],['Mochi','Cat','Block 12 #07-11','Resident D'],['Pet shelter A','Capacity 40','Harbour Hall annex','Volunteer team']],chk:['List pets left behind','Contact owners','Arrange temporary pet shelter','Engage vet and animal rescue','Reunite pets with owners'],btn:'Arrange care'},
+'Finance':{cols:['Item','Category','Amount (SGD)','Approver'],rows:[['Emergency repair contract','Works','85,000','Finance lead'],['Temporary housing costs','Housing','42,000','Director'],['Water supply','Supplies','12,500','Finance lead']],chk:['Confirm emergency spending limit','Raise purchase request','Obtain approval','Track actual spend'],btn:'Request approval'},
+'Logistics':{cols:['Item','Location','In stock','Unit'],rows:[['Bottled water','Depot A','1,200','cartons'],['Blankets','Depot A','640','pcs'],['Tents','Depot B','35','units'],['Generators','Depot B','8','units']],chk:['Confirm stock levels','Arrange vehicles','Plan delivery route','Confirm receipt at site'],btn:'Request stock'},
+'Manpower & Resources':{cols:['Staff','Role','Availability','Phone'],rows:[['Officer 1','Marshal','Available','555-0201'],['Officer 2','Marshal','Available','555-0202'],['Officer 3','Medic','On duty','555-0203'],['Officer 4','Liaison','Available','555-0204']],chk:['Check duty roster','Call in standby staff','Brief deployed staff','Plan shift rotation'],btn:'Assign to incident'},
+'Security':{cols:['Post or patrol','Area','Officers','Status'],rows:[['Patrol 1','Northgate cordon','4','Active'],['Patrol 2','Relief centre','6','Active'],['Reserve','Command post','3','Standby']],chk:['Set up cordon','Control access to site','Deploy patrols','Brief on crowd control','Log all incidents'],btn:'Deploy patrol'},
+'Public Communications':{cols:['Message template','Channel','Audience','Owner'],rows:[['Evacuation notice for Block 12','SMS and app','Residents','Comms 1'],['Road closure advisory','Social media','General public','Comms 2'],['Water supply update','SMS','Affected units','Comms 1']],chk:['Draft public message','Get approval','Publish on channels','Monitor feedback','Issue update'],btn:'Queue broadcast'}};
+const code=n=>n.replace(/[^A-Za-z ]/g,'').split(' ')[0].slice(0,3).toUpperCase();
+const ensureDom=()=>{if(!S.dom)S.dom=Object.fromEntries(DOM.map(d=>[d,AID[d].rows.map(r=>[...r])]))};ensureDom();
+function vAid(){const a=AID[aidCat],rows=S.dom[aidCat];
+const chk='<h3>Response checklist</h3>'+a.chk.map((t,i)=>{const k=sel+':'+aidCat+':'+i;return`<label style="color:var(--ink);font-size:14px"><input type="checkbox" data-a="chk" data-k="${k}" ${S.chk[k]?'checked':''}> ${t}</label>`}).join('');
+const tbl=`<h3>Resources and records</h3><table><tr><th></th>${a.cols.map(c=>`<th>${c}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr><td><input type="checkbox" class="rk" data-i="${i}" aria-label="Select row"></td>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${a.cols.length+1}">No records yet. Add one below.</td></tr>`}</table>
+<div class="row"><button class="btn" data-a="attach">${a.btn}</button><button class="btn s" data-a="delrow">Remove selected</button></div>
+<div class="box" style="margin-top:12px"><b>Add record</b><div class="dg">${a.cols.map((c,i)=>`<div><label for="n${i}">${c}</label><input type="text" id="n${i}"></div>`).join('')}</div><div class="row"><button class="btn" data-a="addrow">Add record</button></div></div>`;
+return pick()+`<div class="pad two"><div class="box"><h2>Staff aids</h2>${DOM.map(k=>`<div class="card ${k===aidCat?'sel':''}" tabindex="0" data-a="cat" data-k="${k}">${k}</div>`).join('')}</div><div><h2>${aidCat}</h2>${tbl}${chk}</div></div>`}
+function vDash(){return`<div class="pad"><h2>Domain overview</h2><div class="dg">${DOM.map(d=>{const oi=S.inc.filter(i=>i.nat===d&&i.st==='Open').length,ot=S.task.filter(t=>t.fn===d&&t.st!=='Done'),pe=ot.filter(t=>t.st==='Pending').length;
+return`<div class="box"><b>${d}</b><div class="m">${oi} open incidents · ${ot.length} active tasks · ${pe} pending</div><div class="m">${S.dom[d].length} records on file</div><div class="row"><button class="btn s" data-a="godom" data-k="${d}" data-v="aid">Staff aids</button><button class="btn s" data-a="godom" data-k="${d}" data-v="task">Tasks</button></div></div>`}).join('')}</div></div>`}
+function vTask(){const T=S.task.filter(t=>t.fn===tab&&(!tf||t.inc===sel));
+return pick()+`<div class="pad"><h2>Tasks & requests</h2><div class="tabs">${DOM.map(f=>`<button data-a="tab" data-k="${f}" class="${tab===f?'on':''}">${f}</button>`).join('')}</div>
+<div class="row" style="margin:0 0 8px"><button class="btn s" data-a="tf">${tf?'Showing this incident only. Show all':'Showing all incidents. Show selected only'}</button></div><table><tr><th>ID</th><th>Incident</th><th>Task</th><th>Owner</th><th>Priority</th><th>Status</th></tr>${T.map(t=>`<tr><td>${t.id}</td><td>${t.inc.slice(4,12)}…${t.inc.slice(-4)}</td><td>${esc(t.what)}</td><td>${esc(t.who)}</td><td>${t.pri}</td><td><button class="st ${t.st.replace(' ','')}" data-a="cycle" data-id="${t.id}" title="Click to advance status">${t.st}</button></td></tr>`).join('')||'<tr><td colspan="6">No tasks here yet. Add one below.</td></tr>'}</table>
+<div class="box" style="margin-top:12px"><b>Add new task</b><label for="t-what">Task</label><input type="text" id="t-what"><label for="t-who">Owner</label><input type="text" id="t-who"><label for="t-pri">Priority</label><select class="f" id="t-pri"><option>High</option><option selected>Medium</option><option>Low</option></select><div class="row"><button class="btn" data-a="addtask">Add task</button></div></div></div>`}
+function vCol(){const ch=S.chat[sel]||[];
+return pick()+`<div class="pad two"><div class="box"><h2>Incident chat</h2><div style="min-height:200px;max-height:340px;overflow:auto">${ch.map(m=>`<div class="msg ${m.by==='Operator – Admin'?'me':''}"><small>${esc(m.by)} · ${hm(m.t)}</small><br>${esc(m.txt)}</div>`).join('')||'<p>No messages yet. Say something to your team.</p>'}</div>
+<label for="cm">Message</label><input type="text" id="cm" placeholder="Type and press Enter"><div class="row"><button class="btn" data-a="send">Send</button></div></div>
+<div class="box"><h2>Broadcast to all teams</h2><textarea id="bc" rows="3" aria-label="Broadcast message"></textarea><div class="row"><button class="btn" data-a="bcast">Send broadcast</button></div><h3>Recent broadcasts</h3>${S.bc.map(b=>`<div class="msg"><small>${esc(b.by)} · ${fmt(b.t)}</small><br>${esc(b.txt)}</div>`).join('')}</div></div>`}
+function render(){const V={dash:vDash,inc:vInc,rep:vRep,log:vLog,aid:vAid,task:vTask,col:vCol};$('#app').style.cssText='display:flex;flex-direction:column;height:100%';$('#app').innerHTML=head()+'<div id="main">'+V[view]()+'</div>';if(view==='inc')mapInit()}
+const A={
+nav:e=>{view=e.dataset.k;render()},
+ind:e=>{const i=+e.dataset.i;S.ind[i]=(S.ind[i]+1)%4;save();addLog(sel,`${IND[i]} changed to ${LV[S.ind[i]]}`,'Operator – Admin');render()},
+flt:e=>{flt=e.dataset.f;render()},
+selinc:e=>{sel=e.dataset.id;render()},
+toggle:()=>{const c=gi(sel);c.st=c.st==='Open'?'Closed':'Open';addLog(sel,`Incident ${c.st==='Open'?'reopened':'closed'} by Operator – Admin`);save();render()},
+approve:e=>{const r=S.rep.find(x=>x.id===e.dataset.id);r.status='Approved';addLog(r.inc,`Report ${r.id} approved`,'Operator – Admin');save();render()},
+saverep:e=>{const v=id=>$('#'+id).value.trim(),d=e.dataset.d;let inc=v('f-inc');
+if(!v('f-title')||!v('f-det'))return toast('Add a title and details first');
+if(!inc){inc='OPS/'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'/'+String(S.nxt++).padStart(4,'0');S.inc.unshift({id:inc,nat:v('f-nat'),title:v('f-title'),loc:v('f-loc')||'Location TBC',ll:[1.30+Math.random()*.08,103.74+Math.random()*.16],sev:'P2',st:'Open',t:ago(0),cas:[0,0,0,0,0]});addLog(inc,'Incident created by Operator – Admin');sel=inc}
+S.rep.unshift({id:'R-'+(S.rep.length+1+Math.floor(Math.random()*90)),inc,tpl:v('f-tpl'),title:v('f-title'),level:v('f-lvl'),details:v('f-det'),status:d?'Draft':'Pending Review',t:ago(0)});
+addLog(inc,d?'Report saved as draft':'Report submitted for review','Operator – Admin');save();toast(d?'Draft saved':'Report submitted');render()},
+addlog:()=>{const v=$('#nl').value.trim();if(!v)return toast('Type an entry first');addLog(sel,v,'Operator – Admin');render()},
+cat:e=>{aidCat=e.dataset.k;render()},
+chk:e=>{S.chk[e.dataset.k]=e.checked;save()},
+attach:()=>{const a=AID[aidCat],R=S.dom[aidCat],r=[...document.querySelectorAll('.rk:checked')].map(c=>R[+c.dataset.i]);if(!r.length)return toast('Select at least one row');
+const names=r.map(x=>x[0]).join(', ');addLog(sel,`${aidCat}: ${names} – ${a.btn.toLowerCase()}`,'Operator – Admin');
+if(aidCat==='Public Communications'){S.bc.unshift({t:ago(0),txt:names,by:'Public Communications'});save();return toast('Queued as broadcast')}
+S.task.push({id:code(aidCat)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn:aidCat,inc:sel,what:`${a.btn}: ${names}`,who:'Unassigned',pri:'Medium',st:'Pending'});save();toast('Task created in Tasks and Requests')},
+addrow:()=>{const a=AID[aidCat],v=a.cols.map((c,i)=>$('#n'+i).value.trim());if(!v[0])return toast('Fill in the first field');S.dom[aidCat].push(v);addLog(sel,`${aidCat}: record added (${v[0]})`,'Operator – Admin');save();render()},
+delrow:()=>{const k=[...document.querySelectorAll('.rk:checked')].map(c=>+c.dataset.i);if(!k.length)return toast('Select rows to remove');S.dom[aidCat]=S.dom[aidCat].filter((_,i)=>!k.includes(i));save();render()},
+godom:e=>{aidCat=tab=e.dataset.k;view=e.dataset.v;render()},
+tab:e=>{tab=e.dataset.k;render()},
+tf:()=>{tf=tf?0:1;render()},
+inctasks:()=>{tab=gi(sel).nat;tf=1;view='task';render()},
+incaid:()=>{aidCat=gi(sel).nat;view='aid';render()},
+mktask:e=>{const c=gi(sel),w=AID[c.nat].chk[+e.dataset.t];S.task.push({id:code(c.nat)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn:c.nat,inc:sel,what:w,who:'Unassigned',pri:'Medium',st:'Pending'});addLog(sel,`Task created: ${w}`,'Operator – Admin');save();toast('Task created');render()},
+genrep:()=>{const c=gi(sel),tk=S.task.filter(t=>t.inc===c.id),ck=AID[c.nat].chk,lg=S.log.filter(l=>l.inc===c.id).slice().reverse(),dn=ck.filter((_,i)=>S.chk[c.id+':'+c.nat+':'+i]).length;
+const h=`<h2>Incident report: ${esc(c.title)}</h2><p class="m">Generated ${fmt(ago(0))} by Operator – Admin</p>
+<table><tr><th>Incident ID</th><td>${c.id}</td></tr><tr><th>Domain</th><td>${c.nat}</td></tr><tr><th>Severity</th><td>${c.sev}</td></tr><tr><th>Status</th><td>${c.st}</td></tr><tr><th>Location</th><td>${esc(c.loc)}</td></tr><tr><th>Opened</th><td>${fmt(c.t)}</td></tr><tr><th>Casualties</th><td>${PRI.map((p,i)=>p+': '+c.cas[i]).join(', ')}</td></tr></table>
+<h3>Actions required (${dn} of ${ck.length} done)</h3><ul>${ck.map((t,i)=>`<li>${S.chk[c.id+':'+c.nat+':'+i]?'Done':'Open'}: ${t}</li>`).join('')}</ul>
+<h3>Tasks (${tk.length})</h3>${tk.length?`<table><tr><th>ID</th><th>Task</th><th>Owner</th><th>Status</th></tr>${tk.map(t=>`<tr><td>${t.id}</td><td>${esc(t.what)}</td><td>${esc(t.who)}</td><td>${t.st}</td></tr>`).join('')}</table>`:'<p>No tasks linked yet.</p>'}
+<h3>Timeline</h3><ul>${lg.map(l=>`<li>${fmt(l.t)}: ${esc(l.msg)} (${esc(l.by)})</li>`).join('')||'<li>No log entries.</li>'}</ul>
+<h3>Reports on file</h3><ul>${S.rep.filter(r=>r.inc===c.id).map(r=>`<li>${r.id}, ${r.tpl}, ${r.status}</li>`).join('')||'<li>None</li>'}</ul>`;
+$('#modal').innerHTML=`<div class="sheet">${h}<div class="row noprint"><button class="btn" data-a="printrep">Print or save as PDF</button><button class="btn s" data-a="copyrep">Copy text</button><button class="btn s" data-a="savegen">Save to reports</button><button class="btn s" data-a="closem">Close</button></div></div>`;$('#modal').style.display='block'},
+closem:()=>{$('#modal').style.display='none'},
+printrep:()=>window.print(),
+copyrep:()=>{const t=$('#modal .sheet').innerText.replace(/Print or save as PDF[\s\S]*$/,'');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Report copied'),()=>toast('Copy is not available here. Use Print instead'))},
+savegen:()=>{const c=gi(sel);S.rep.unshift({id:'R-'+(S.rep.length+1+Math.floor(Math.random()*90)),inc:c.id,tpl:'Auto-generated',title:c.title,level:'Auto',details:'Generated incident report',status:'Pending Review',t:ago(0)});addLog(c.id,'Incident report generated and saved','Operator – Admin');save();toast('Saved to Reports')},
+
+cycle:e=>{const O=['Pending','Assigned','In Progress','Done'],t=S.task.find(x=>x.id===e.dataset.id);t.st=O[(O.indexOf(t.st)+1)%4];addLog(t.inc,`Task ${t.id} is now ${t.st}`,'Operator – Admin');save();render()},
+addtask:()=>{const w=$('#t-what').value.trim();if(!w)return toast('Describe the task first');S.task.push({id:code(tab)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn:tab,inc:sel,what:w,who:$('#t-who').value.trim()||'Unassigned',pri:$('#t-pri').value,st:'Pending'});addLog(sel,`Task added: ${w}`,'Operator – Admin');save();render()},
+send:()=>{const v=$('#cm').value.trim();if(!v)return;(S.chat[sel]=S.chat[sel]||[]).push({by:'Operator – Admin',txt:v,t:ago(0)});save();render();$('#cm').focus()},
+bcast:()=>{const v=$('#bc').value.trim();if(!v)return toast('Write a broadcast first');S.bc.unshift({t:ago(0),txt:v,by:'Operator – Admin'});save();toast('Broadcast sent to all teams');render()},
+reset:()=>{try{localStorage.removeItem(KEY)}catch(e){}S=seed();ensureDom();sel=S.inc[0].id;view='inc';render();toast('Demo data reset')}};
+document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(a&&a.dataset.a!=='chk'&&A[a.dataset.a])A[a.dataset.a](a)});
+document.addEventListener('change',e=>{if(e.target.id==='pick'){sel=e.target.value;render()}else if(e.target.dataset.a==='chk')A.chk(e.target)});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='cm')A.send();else if(e.target.dataset.a==='selinc'||e.target.dataset.a==='cat')A[e.target.dataset.a](e.target)}});
+render();
+</script></body></html>
