@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1c3a4d"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Crisis Ops"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
 <title>Crisis Ops – Prototype</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -54,6 +56,8 @@ input[type=text],select.f,textarea{width:100%;border:1px solid var(--line);borde
 #toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#16232d;color:#fff;padding:8px 16px;border-radius:4px;display:none}
 #modal{position:fixed;inset:0;background:rgba(22,35,45,.55);display:none;overflow:auto;padding:20px;z-index:5}#modal .sheet{background:#fff;max-width:760px;margin:auto;padding:24px;border-radius:4px}#modal ul{padding-left:18px}@media print{#app,.ban,#toast,.noprint{display:none!important}#modal{position:static;background:none;padding:0}}
 .ban{background:#fff4d6;border-bottom:1px solid #e8d38d;text-align:center;font-size:12px;padding:3px}
+@media(max-width:860px){body{font-size:15px}.btn,.tabs button,.nav button,button.st{min-height:42px}.top{padding:0 8px;gap:6px}.stat{width:100%;flex-wrap:nowrap;overflow-x:auto}.who{width:100%;display:flex;flex-wrap:wrap;gap:4px}.pad{padding:10px}table{display:block;overflow-x:auto;white-space:nowrap}.msg{max-width:95%}.mi{max-width:170px}}
+@supports(padding:env(safe-area-inset-bottom)){body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}}
 @media(max-width:860px){.g3{grid-template-columns:1fr;height:auto}#map{height:320px}.two{grid-template-columns:1fr}.stat{margin-left:0}}
 </style></head><body>
 <div class="ban">Prototype for demonstration. All data is fictional and stored only in your browser.</div>
@@ -76,12 +80,12 @@ const STG=['Detect','Assess','Activate','Plan','Task','Respond','Monitor','Recov
 const WID=[['inc','Open incidents'],['ovr','Overdue tasks'],['man','Manpower readiness'],['stk','Low stock'],['fin','Finance utilisation'],['alr','Alerts'],['sit','Reports pending']],BL={sum:'Summary',cas:'Casualties',act:'Actions',tsk:'Tasks',tl:'Timeline',rep:'Reports on file'};
 const R=()=>ROLES[S.role],vis=d=>R().d.includes(d),INC=()=>S.inc.filter(i=>vis(i.nat)||(R().o&&S.task.some(t=>t.inc===i.id&&(R().d.includes(t.fn)||R().d.includes(t.from))))),zoneOf=i=>i.ll[1]<103.78?'West':i.ll[1]<103.88?'Central':'East';
 const sla=t=>S.cfg.sla[t.pri]||60,age=t=>Math.round((Date.now()-new Date(t.t))/60000),lvl=t=>['Pending','Assigned'].includes(t.st)?(age(t)>sla(t)?2:age(t)>sla(t)/2?1:0):0;
-function sweep(){S.task.forEach(t=>{if(!t.t)t.t=ago(0);if(!t.esc&&S.cfg.esc&&lvl(t)===2){t.esc=1;addLog(t.inc,`Task ${t.id} overdue and escalated to ${AG[t.fn]} supervisor`,'System');S.bc.unshift({t:ago(0),txt:`Overdue: ${t.id} ${t.what}`,by:'Escalation to '+AG[t.fn]})}})}
+function sweep(){S.task.forEach(t=>{if(!t.t)t.t=ago(0);if(!t.esc&&S.cfg.esc&&lvl(t)===2){t.esc=1;const due=new Date(+new Date(t.t)+sla(t)*60000).toISOString();S.log.unshift({t:due,inc:t.inc,msg:`Task ${t.id} overdue and escalated to ${AG[t.fn]} supervisor`,by:'System'});S.bc.unshift({t:due,txt:`Overdue: ${t.id} ${t.what}`,by:'Escalation to '+AG[t.fn]});save()}})}
 const finU=()=>Math.round(S.dom['Finance'].filter(r=>r[3]!=='Requested').reduce((a,r)=>a+(+String(r[2]).replace(/,/g,'')||0),0)/S.fin.budget*100);
 function kpi(k){const tk=S.task.filter(t=>vis(t.fn)),od=tk.filter(t=>lvl(t)===2).length,mp=S.dom['Manpower & Resources'],mr=mp.length?Math.round(mp.filter(r=>r[2]==='Present').length/mp.length*100):0,fu=finU(),lo=S.stock.filter(x=>x.q<x.min).length;
 return{inc:[INC().filter(i=>i.st==='Open').length,'open incidents',0],ovr:[od,'overdue tasks',od>0],man:[mr+'%','manpower readiness',mr<S.cfg.man],stk:[lo,'items below minimum stock',lo>0],fin:[fu+'%','budget utilised',fu>=S.cfg.fin],alr:[S.bc.length,'alerts and broadcasts',0],sit:[S.rep.filter(r=>r.status==='Pending Review').length,'reports pending review',0]}[k]}
-const mkTask=(fn,inc,what,who,pri)=>S.task.push({id:code(fn)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn,inc,what,who:who||'Unassigned',pri:pri||'Medium',st:'Pending',t:ago(0)});
-function mkInc(nat,title,loc,sev,tk,lead){const id='OPS/'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'/'+String(S.nxt++).padStart(4,'0');S.inc.unshift({id,nat,title,loc,ll:[1.30+Math.random()*.08,103.74+Math.random()*.16],sev,st:'Open',t:ago(0),cas:[0,0,0,0,0],stage:4});addLog(id,'Incident created by '+S.role,S.role);tk.forEach(w=>mkTask(nat,id,w,lead,sev==='P1'?'High':'Medium'));save();return id}
+const mkTask=(fn,inc,what,who,pri)=>S.task.push({id:code(fn)+'-REQ-'+String(S.task.length+1).padStart(3,'0')+SFX(),fn,inc,what,who:who||'Unassigned',pri:pri||'Medium',st:'Pending',t:ago(0)});
+function mkInc(nat,title,loc,sev,tk,lead){const id='OPS/'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'/'+String(S.nxt++).padStart(4,'0')+SFX();S.inc.unshift({id,nat,title,loc,ll:[1.30+Math.random()*.08,103.74+Math.random()*.16],sev,st:'Open',t:ago(0),cas:[0,0,0,0,0],stage:4});addLog(id,'Incident created by '+S.role,S.role);tk.forEach(w=>mkTask(nat,id,w,lead,sev==='P1'?'High':'Medium'));save();return id}
 let wd=null,dd=[],nd='Structural Safety',nf={t:'',l:''};
 const LV=['Green','Yellow','Orange','Red'];
 function seed(){return{
@@ -118,7 +122,7 @@ bc:[{t:ago(30),txt:'Heavy rain expected 3pm to 6pm. Check drainage-related incid
 ind:[1,1,2,1],chk:{},nxt:7}}
 let tf=0,S=load(),view='dash',sel=null,flt='Open',aidCat='Structural Safety',tab='Emergency Housing',map=null;
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return seed()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){stamp();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}push()}
 sel=S.inc[0].id;
 const gi=id=>S.inc.find(i=>i.id===id),addLog=(inc,msg,by='System')=>{S.log.unshift({t:ago(0),inc,msg,by});save()};
 function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t.h);t.h=setTimeout(()=>t.style.display='none',2200)}
@@ -126,7 +130,7 @@ const IND=['Threat level','Public health','Air quality','Weather'];
 function head(){return`<div class="top"><span class="brand">Crisis Ops</span>
 <nav class="nav" aria-label="Main">${NAV.filter(n=>!R().v||R().v.includes(n[0])).map(([k,n])=>`<button data-a="nav" data-k="${k}" class="${view===k?'on':''}">${n}</button>`).join('')}</nav>
 <div class="stat">${IND.map((n,i)=>`<button class="chip L${S.ind[i]}" data-a="ind" data-i="${i}" title="Click to change level">${n}<small>${LV[S.ind[i]]}</small></button>`).join('')}</div>
-<div class="who"><select id="role" aria-label="Role">${Object.keys(ROLES).map(r=>`<option ${r===S.role?'selected':''}>${r}</option>`).join('')}</select> <select id="scn" aria-label="Scenario">${['Peacetime','NE','CE'].map(r=>`<option ${r===S.scn?'selected':''}>${r}</option>`).join('')}</select> ${S.ho?`<button class="btn" data-a="ack">Acknowledge handover from ${S.ho.by}</button> `:''}<button class="btn s" data-a="handover">Handover</button> <button class="btn s" data-a="inject">Inject event</button> <button class="btn s" data-a="nav" data-k="col">Alerts <span class="badge">${S.bc.length}</span></button> <button class="btn s" data-a="reset">Reset demo</button></div></div>`}
+<div class="who"><button class="chip L1" id="syncchip" data-a="nav" data-k="cfg">${syncLabel()}</button> <select id="role" aria-label="Role">${Object.keys(ROLES).map(r=>`<option ${r===S.role?'selected':''}>${r}</option>`).join('')}</select> <select id="scn" aria-label="Scenario">${['Peacetime','NE','CE'].map(r=>`<option ${r===S.scn?'selected':''}>${r}</option>`).join('')}</select> ${S.ho?`<button class="btn" data-a="ack">Acknowledge handover from ${S.ho.by}</button> `:''}<button class="btn s" data-a="handover">Handover</button> <button class="btn s" data-a="inject">Inject event</button> <button class="btn s" data-a="nav" data-k="col">Alerts <span class="badge">${S.bc.length}</span></button> <button class="btn s" data-a="reset">Reset demo</button></div></div>`}
 function pick(){const o=INC().filter(i=>i.st==='Open');return`<div class="sub">Working on incident <select id="pick" aria-label="Select incident">${o.map(i=>`<option value="${i.id}" ${i.id===sel?'selected':''}>${i.id} – ${esc(i.title)}</option>`).join('')}<option value="PREP" ${sel==='PREP'?'selected':''}>General (non-incident / preparedness)</option></select></div>`}
 function bars(rows,col){const mx=Math.max(1,...rows.map(r=>r[1]));return rows.map((r,i)=>`<div class="bar"><span>${esc(r[0])}</span><i style="width:${r[1]/mx*100}px;background:${col[i%col.length]}"></i>${r[1]}</div>`).join('')}
 function vInc(){
@@ -188,7 +192,7 @@ S.cfg=S.cfg||{psi:[51,101,201],man:70,fin:80,appr:40000,esc:1,sla:{High:30,Mediu
 S.tpls=S.tpls||{'Standard':['sum','cas','act','tsk','tl'],'Executive summary':['sum','tsk','rep'],'Casualty report':['sum','cas']};
 S.shel=S.shel||[{n:'Harbour Hall',cap:60,occ:42,acc:1},{n:'Eastgate Community Club',cap:40,occ:38,acc:0},{n:'Marine Hall',cap:80,occ:20,acc:1}];
 S.stock=S.stock||[{i:'Bottled water (cartons)',q:1200,min:500},{i:'Blankets',q:640,min:300},{i:'Tents',q:35,min:40},{i:'Generators',q:8,min:5}];
-S.fin=S.fin||{budget:150000};S.lay=S.lay||{shel:1,team:0,cctv:0};
+S.ep=S.ep||1;S.fin=S.fin||{budget:150000};S.lay=S.lay||{shel:1,team:0,cctv:0};
 S.task.forEach((t,i)=>{if(!t.t)t.t=ago([95,20,70,10,200,5][i%6])});S.inc.forEach((c,i)=>{if(c.stage==null)c.stage=c.st==='Closed'?8:[5,4,5,3,6,2,4,1,1,2,3,8][i%12]})};ensureDom();
 function vAid(){const a=AID[aidCat],rows=S.dom[aidCat];
 const chk='<h3>Response checklist</h3>'+a.chk.map((t,i)=>{const k=sel+':'+aidCat+':'+i;return`<label style="color:var(--ink);font-size:14px"><input type="checkbox" data-a="chk" data-k="${k}" ${S.chk[k]?'checked':''}> ${t}</label>`}).join('');
@@ -226,6 +230,7 @@ return`<div class="pad"><h2>Settings: thresholds and rules</h2><div class="box">
 <h3>Task SLA (minutes before overdue)</h3><div class="dg">${n('s-H','High',c.sla.High)}${n('s-M','Medium',c.sla.Medium)}${n('s-L','Low',c.sla.Low)}</div>
 <div style="margin-top:8px"><label style="color:var(--ink);font-size:14px"><input type="checkbox" id="c-e" ${c.esc?'checked':''}> Escalate overdue tasks to the supervisor automatically</label></div>
 <h3>Dashboard widgets</h3>${WID.map(([k,l])=>cb('wk',k,l,S.wid.includes(k))).join('')}<div class="row"><button class="btn" data-a="savecfg">Save settings</button></div></div>
+<div class="box" style="margin-top:12px"><h3 style="margin-top:0">Shared data across devices</h3><div class="m">Status: <b>${sync.on?sync.st:'Local only'}</b> · Online now: ${sync.pres.join(', ')||'none'}</div><div class="dg"><div><label for="sy-u">Firebase Realtime Database URL</label><input type="text" id="sy-u" value="${esc(SY.url||'')}" placeholder="https://your-project-default-rtdb.firebaseio.com"></div><div><label for="sy-r">Room code</label><input type="text" id="sy-r" value="${esc(SY.room||'demo')}"></div></div><div class="row"><button class="btn" data-a="syon">Connect</button><button class="btn s" data-a="syoff">Disconnect</button></div><div class="m">Use the same URL and room code on every device. Demo data only. Do not enter real personal data.</div></div>
 <div class="box" style="margin-top:12px"><h3 style="margin-top:0">Test the rules</h3><label for="psi">Simulate a PSI reading</label><input type="text" id="psi" placeholder="e.g. 120"><div class="row"><button class="btn s" data-a="psi">Apply reading</button></div></div></div>`}
 const LS=['Allocated','Dispatched','Delivered'],PS=['Draft','Cleared','Issued'],tkOf=e=>S.task.find(t=>t.id===e.dataset.id);
 const FLOW={'Emergency Housing':{b:'Activate shelter workflow',own:'Household and shelter assessment',r:[{to:'Manpower & Resources',w:'Marshals for shelter (4)',x:{need:'Marshal'}},{to:'Logistics',w:'Bedding for 60 evacuees and transport'},{to:'Finance',w:'Funding for temporary housing',x:{amt:42000}}]},
@@ -255,6 +260,29 @@ return pick()+`<div class="pad"><h2>${d} workspace</h2>${ds.length>1?`<div class
 <button class="btn s" data-a="tf">${tf?'Showing this incident only. Show all':'Showing all incidents. Show selected only'}</button>
 <h3>Incoming queue (${inb.length})</h3><table><tr><th>ID</th><th>Incident</th><th>From</th><th>Request</th><th>Status</th><th>Age / SLA</th><th>Result</th><th>Action</th></tr>${inb.map(t=>tl(t,0)).join('')||'<tr><td colspan="8">Nothing in the queue.</td></tr>'}</table>
 <h3>Requests I raised (${out.length})</h3><table><tr><th>ID</th><th>Incident</th><th>To</th><th>Request</th><th>Status</th><th>Age / SLA</th><th>Result</th></tr>${out.map(t=>tl(t,1)).join('')||'<tr><td colspan="7">No outgoing requests yet.</td></tr>'}</table></div>`}
+let SY={};try{SY=JSON.parse(localStorage.getItem('crisisops-sync')||'{}')}catch(e){}
+let sync={on:0,st:'Local only',es:null,iv:0,pres:[],dev:Math.random().toString(36).slice(2,7)},SNAP={},pushT=null;
+const BK=['dom','shel','stock','cfg','ind','fin','tpls','chk','scn','wid','nxt','ho'],SFX=()=>sync.on?sync.dev[0].toUpperCase():'',saveSy=()=>{try{localStorage.setItem('crisisops-sync',JSON.stringify(SY))}catch(e){}},url=p=>(SY.url||'').replace(/\/$/,'')+'/'+p+'.json';
+const syncLabel=()=>sync.on?`Sync: ${sync.st} · ${Math.max(1,sync.pres.length)} device(s)`:'Local only';
+function hdrSync(){const e=$('#syncchip');if(e){e.textContent=syncLabel();e.className='chip '+(sync.on&&sync.st==='Live'?'L0':'L1')}}
+function snap(){['inc','task','rep'].forEach(k=>S[k].forEach(r=>SNAP[k+r.id]=JSON.stringify({...r,u:0})));SNAP.blob=JSON.stringify(BK.map(k=>S[k]))}
+function stamp(){const n=Date.now();['inc','task','rep'].forEach(k=>S[k].forEach(r=>{const j=JSON.stringify({...r,u:0});if(SNAP[k+r.id]!==j){r.u=n;SNAP[k+r.id]=j}}));const b=JSON.stringify(BK.map(k=>S[k]));if(SNAP.blob!==b){S.ou=n;SNAP.blob=b}}
+const sig=x=>['inc','task','rep'].map(k=>x[k].map(r=>r.id+':'+(r.u||0)).sort().join()).join('/')+'|'+x.log.length+'|'+x.bc.length+'|'+Object.values(x.chat||{}).reduce((a,l)=>a+l.length,0)+'|'+(x.ou||0)+'|'+(x.ep||1);
+function merge(R){if((R.ep||1)>(S.ep||1)){const k={role:S.role,lay:S.lay};S=R;Object.assign(S,k);ensureDom();snap();return 1}if((R.ep||1)<(S.ep||1))return 0;let ch=0;
+['inc','task','rep'].forEach(k=>{const m=new Map(S[k].map(r=>[r.id,r]));R[k].forEach(r=>{const l=m.get(r.id);if(!l){S[k].push(r);ch=1}else if((r.u||0)>(l.u||0)){Object.assign(l,r);ch=1}});S[k].forEach(r=>SNAP[k+r.id]=JSON.stringify({...r,u:0}))});
+['log','bc'].forEach(k=>{const m=new Set(S[k].map(r=>r.t+'|'+(r.inc||'')+'|'+(r.msg||r.txt)));R[k].forEach(r=>{if(!m.has(r.t+'|'+(r.inc||'')+'|'+(r.msg||r.txt))){S[k].push(r);ch=1}});S[k].sort((a,b)=>b.t<a.t?-1:1)});
+Object.entries(R.chat||{}).forEach(([i,a])=>{const l=S.chat[i]=S.chat[i]||[],m=new Set(l.map(x=>x.t+x.by+x.txt));a.forEach(x=>{if(!m.has(x.t+x.by+x.txt)){l.push(x);ch=1}});l.sort((a,b)=>a.t<b.t?-1:1)});
+if((R.ou||0)>(S.ou||0)){BK.forEach(k=>S[k]=R[k]);S.ou=R.ou;ch=1;SNAP.blob=JSON.stringify(BK.map(k=>S[k]))}return ch}
+function push(){if(!sync.on)return;clearTimeout(pushT);pushT=setTimeout(()=>{fetch(url('rooms/'+SY.room),{method:'PUT',body:JSON.stringify({u:Date.now(),d:JSON.stringify(S)})}).then(r=>{sync.st=r.ok?'Live':'Sync error';hdrSync()}).catch(()=>{sync.st='Offline';hdrSync()})},250)}
+function softRender(){const a=document.activeElement;if(a&&(a.tagName==='TEXTAREA'||a.tagName==='INPUT'&&a.type!=='checkbox')){sync.pend=1;return}render()}
+function onRemote(R){if(merge(R)){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}softRender()}if(sig(S)!==sig(R))push()}
+function beat(){if(!sync.on)return;fetch(url('presence/'+SY.room+'/'+sync.dev),{method:'PUT',body:JSON.stringify({r:S.role,t:Date.now()})}).catch(()=>{});fetch(url('presence/'+SY.room)).then(r=>r.json()).then(j=>{sync.pres=Object.values(j||{}).filter(p=>Date.now()-p.t<25000).map(p=>p.r);hdrSync()}).catch(()=>{})}
+function disconnect(){if(sync.es)sync.es.close();clearInterval(sync.iv);sync.es=null;sync.on=0;sync.st='Local only';sync.pres=[];hdrSync()}
+function connect(){disconnect();if(!SY.url)return;sync.on=1;sync.st='Connecting';hdrSync();
+fetch(url('rooms/'+SY.room)).then(r=>r.json()).then(j=>{if(j&&j.d){const R=JSON.parse(j.d);if(SY.joined!==SY.room){const k={role:S.role,lay:S.lay};S=R;Object.assign(S,k);ensureDom();snap();SY.joined=SY.room;saveSy();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}else onRemote(R)}else{SY.joined=SY.room;saveSy();push()}
+const es=sync.es=new EventSource(url('rooms/'+SY.room));es.onopen=()=>{sync.st='Live';hdrSync()};es.onerror=()=>{sync.st='Reconnecting';hdrSync()};
+['put','patch'].forEach(t=>es.addEventListener(t,e=>{try{const m=JSON.parse(e.data);if(m&&m.path==='/'&&m.data&&m.data.d)onRemote(JSON.parse(m.data.d))}catch(x){}}));sync.iv=setInterval(beat,8000);beat()}).catch(()=>{sync.st='Offline';hdrSync()})}
+snap();document.addEventListener('focusout',()=>{if(sync.pend){sync.pend=0;setTimeout(render,60)}});
 function vTask(){const T=S.task.filter(t=>(tab==='All'?vis(t.fn)||R().d.includes(t.from):t.fn===tab)&&(!tf||t.inc===sel));
 return pick()+`<div class="pad"><h2>Tasks & requests</h2><div class="tabs">${['All',...DOM.filter(vis)].map(f=>`<button data-a="tab" data-k="${f}" class="${tab===f?'on':''}">${f}</button>`).join('')}</div>
 <div class="row" style="margin:0 0 8px"><button class="btn s" data-a="tf">${tf?'Showing this incident only. Show all':'Showing all incidents. Show selected only'}</button></div><table><tr><th>ID</th><th>Incident</th><th>Task</th><th>From → To</th><th>Result</th><th>Owner</th><th>Priority</th><th>Status</th><th>Age / SLA</th></tr>${T.map(t=>`<tr><td>${t.id}</td><td>${t.inc==='PREP'?'Preparedness':t.inc.slice(4,12)+'…'+t.inc.slice(-4)}</td><td>${esc(t.what)}</td><td>${t.from||'Incident mgmt'} → ${t.fn} (${AG[t.fn]})</td><td>${esc(t.res||'')}</td><td>${esc(t.who)}</td><td>${t.pri}</td><td><button class="st ${t.st.replace(' ','')}" data-a="cycle" data-id="${t.id}" title="Click to advance status">${t.st}</button></td><td style="background:${['','#f8e3a6','#f2b4ac'][lvl(t)]}">${age(t)}m / ${sla(t)}m${t.esc?' · escalated':''}</td></tr>`).join('')||'<tr><td colspan="9">No tasks here yet. Add one below.</td></tr>'}</table>
@@ -273,7 +301,7 @@ toggle:()=>{const c=gi(sel);c.st=c.st==='Open'?'Closed':'Open';c.stage=c.st==='C
 approve:e=>{const r=S.rep.find(x=>x.id===e.dataset.id);r.status='Approved';addLog(r.inc,`Report ${r.id} approved`,'Operator – Admin');save();render()},
 saverep:e=>{const v=id=>$('#'+id).value.trim(),d=e.dataset.d;let inc=v('f-inc');
 if(!v('f-title')||!v('f-det'))return toast('Add a title and details first');
-if(!inc){inc='OPS/'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'/'+String(S.nxt++).padStart(4,'0');S.inc.unshift({id:inc,nat:v('f-nat'),title:v('f-title'),loc:v('f-loc')||'Location TBC',ll:[1.30+Math.random()*.08,103.74+Math.random()*.16],sev:'P2',st:'Open',t:ago(0),cas:[0,0,0,0,0],stage:1});addLog(inc,'Incident created by Operator – Admin');sel=inc}
+if(!inc){inc='OPS/'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'/'+String(S.nxt++).padStart(4,'0')+SFX();S.inc.unshift({id:inc,nat:v('f-nat'),title:v('f-title'),loc:v('f-loc')||'Location TBC',ll:[1.30+Math.random()*.08,103.74+Math.random()*.16],sev:'P2',st:'Open',t:ago(0),cas:[0,0,0,0,0],stage:1});addLog(inc,'Incident created by Operator – Admin');sel=inc}
 S.rep.unshift({id:'R-'+(S.rep.length+1+Math.floor(Math.random()*90)),inc,tpl:v('f-tpl'),title:v('f-title'),level:v('f-lvl'),details:v('f-det'),status:d?'Draft':'Pending Review',t:ago(0)});
 addLog(inc,d?'Report saved as draft':'Report submitted for review','Operator – Admin');save();toast(d?'Draft saved':'Report submitted');render()},
 addlog:()=>{const v=$('#nl').value.trim();if(!v)return toast('Type an entry first');addLog(sel,v,'Operator – Admin');render()},
@@ -284,7 +312,7 @@ const names=r.map(x=>x[0]).join(', ');addLog(sel,`${aidCat}: ${names} – ${a.bt
 if(a.flow){const col=a.cols.length-1;let bl=0;r.forEach(x=>{const n=a.flow[Math.min(a.flow.length-1,a.flow.indexOf(x[col])+1)],amt=+String(x[2]).replace(/,/g,'');if(aidCat==='Finance'&&x[col]==='Requested'&&amt>S.cfg.appr&&!['Management','MND HQ'].includes(S.role)){bl++;return}x[col]=n;addLog(sel,`${aidCat}: ${x[0]} moved to ${n}`,S.role)});save();toast(bl?bl+' item(s) need Director approval (Management or MND HQ)':'Stage advanced and logged');return render()}
 if(aidCat==='Emergency Housing'){const ov=$('#ovr')?$('#ovr').value:'',out=r.map(x=>{const z=ov?S.shel.find(q=>q.n===ov):S.shel.find(q=>q.occ<q.cap&&(q.acc||!/wheel/i.test(x[2])));if(!z)return x[0]+' (no space)';z.occ++;return x[0]+' to '+z.n}).join('; ');addLog(sel,'Housing allocation: '+out,S.role);mkTask(aidCat,sel,'Allocate: '+out);save();toast('Allocated');return render()}
 if(aidCat==='Public Communications'){S.bc.unshift({t:ago(0),txt:names,by:'Public Communications'});save();return toast('Queued as broadcast')}
-S.task.push({id:code(aidCat)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn:aidCat,inc:sel,what:`${a.btn}: ${names}`,who:'Unassigned',pri:'Medium',st:'Pending'});save();toast('Task created in Tasks and Requests')},
+S.task.push({id:code(aidCat)+'-REQ-'+String(S.task.length+1).padStart(3,'0')+SFX(),fn:aidCat,inc:sel,what:`${a.btn}: ${names}`,who:'Unassigned',pri:'Medium',st:'Pending'});save();toast('Task created in Tasks and Requests')},
 addrow:()=>{const a=AID[aidCat],v=a.cols.map((c,i)=>$('#n'+i).value.trim());if(!v[0])return toast('Fill in the first field');S.dom[aidCat].push(v);addLog(sel,`${aidCat}: record added (${v[0]})`,'Operator – Admin');save();render()},
 delrow:()=>{const k=[...document.querySelectorAll('.rk:checked')].map(c=>+c.dataset.i);if(!k.length)return toast('Select rows to remove');S.dom[aidCat]=S.dom[aidCat].filter((_,i)=>!k.includes(i));save();render()},
 godom:e=>{aidCat=tab=e.dataset.k;view=e.dataset.v;render()},
@@ -292,7 +320,7 @@ tab:e=>{tab=e.dataset.k;render()},
 tf:()=>{tf=tf?0:1;render()},
 inctasks:()=>{tab=gi(sel).nat;tf=1;view='task';render()},
 incaid:()=>{aidCat=gi(sel).nat;view='aid';render()},
-mktask:e=>{const c=gi(sel),w=AID[c.nat].chk[+e.dataset.t];S.task.push({id:code(c.nat)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn:c.nat,inc:sel,what:w,who:'Unassigned',pri:'Medium',st:'Pending'});addLog(sel,`Task created: ${w}`,'Operator – Admin');save();toast('Task created');render()},
+mktask:e=>{const c=gi(sel),w=AID[c.nat].chk[+e.dataset.t];S.task.push({id:code(c.nat)+'-REQ-'+String(S.task.length+1).padStart(3,'0')+SFX(),fn:c.nat,inc:sel,what:w,who:'Unassigned',pri:'Medium',st:'Pending'});addLog(sel,`Task created: ${w}`,'Operator – Admin');save();toast('Task created');render()},
 genrep:()=>{const c=gi(sel),tk=S.task.filter(t=>t.inc===c.id),ck=AID[c.nat].chk,lg=S.log.filter(l=>l.inc===c.id).slice().reverse(),k=i=>S.chk[c.id+':'+c.nat+':'+i],dn=ck.filter((_,i)=>k(i)).length,tn=$('#rt')?$('#rt').value:'Standard';
 const B={sum:`<table><tr><th>Incident ID</th><td>${c.id}</td></tr><tr><th>Domain</th><td>${c.nat}</td></tr><tr><th>Severity</th><td>${c.sev}</td></tr><tr><th>Lifecycle stage</th><td>${STG[c.stage]}</td></tr><tr><th>Status</th><td>${c.st}</td></tr><tr><th>Location</th><td>${esc(c.loc)}</td></tr><tr><th>Opened</th><td>${fmt(c.t)}</td></tr></table>`,
 cas:`<h3>Casualties</h3><p>${PRI.map((p,i)=>p+': '+c.cas[i]).join(', ')}</p>`,
@@ -302,6 +330,8 @@ tl:`<h3>Timeline</h3><ul>${lg.map(l=>`<li>${fmt(l.t)}: ${esc(l.msg)} (${esc(l.by
 rep:`<h3>Reports on file</h3><ul>${S.rep.filter(r=>r.inc===c.id).map(r=>`<li>${r.id}, ${r.tpl}, ${r.status}</li>`).join('')||'<li>None</li>'}</ul>`};
 const h=`<h2>Incident report: ${esc(c.title)}</h2><p class="m">Template: ${tn}. Generated ${fmt(ago(0))} by ${S.role}</p>${(S.tpls[tn]||[]).map(x=>B[x]).join('')}`;
 $('#modal').innerHTML=`<div class="sheet">${h}<div class="row noprint"><button class="btn" data-a="printrep">Print or save as PDF</button><button class="btn s" data-a="copyrep">Copy text</button><button class="btn s" data-a="savegen">Save to reports</button><button class="btn s" data-a="closem">Close</button></div></div>`;$('#modal').style.display='block'},
+syon:()=>{SY.url=$('#sy-u').value.trim();SY.room=($('#sy-r').value.trim()||'demo').replace(/[.#$\[\]\/]/g,'-');saveSy();connect();render()},
+syoff:()=>{disconnect();SY.url='';saveSy();render()},
 wsd:e=>{wd=e.dataset.k;render()},
 flow:()=>{const f=FLOW[wd];if(!gi(sel))return toast('Select an incident first');mkTask(wd,sel,f.own,'Unassigned','High');f.r.forEach(q=>raise(wd,q.to,sel,q.w,'High',q.x));save();toast(f.r.length+' linked requests raised');render()},
 raisegen:()=>{const w=$('#rq-w').value.trim();if(!gi(sel))return toast('Select an incident first');if(!w)return toast('Describe the request first');raise(wd,$('#rq-to').value,sel,w,'Medium');save();toast('Request raised');render()},
@@ -334,12 +364,13 @@ copyrep:()=>{const t=$('#modal .sheet').innerText.replace(/Print or save as PDF[
 savegen:()=>{const c=gi(sel);S.rep.unshift({id:'R-'+(S.rep.length+1+Math.floor(Math.random()*90)),inc:c.id,tpl:'Auto-generated',title:c.title,level:'Auto',details:'Generated incident report',status:'Pending Review',t:ago(0)});addLog(c.id,'Incident report generated and saved','Operator – Admin');save();toast('Saved to Reports')},
 
 cycle:e=>{const O=['Pending','Assigned','In Progress','Done'],t=S.task.find(x=>x.id===e.dataset.id);t.st=O[(O.indexOf(t.st)+1)%4];addLog(t.inc,`Task ${t.id} is now ${t.st}`,'Operator – Admin');save();render()},
-addtask:()=>{const w=$('#t-what').value.trim();if(!w)return toast('Describe the task first');const fn0=tab==='All'?DOM.find(vis):tab;S.task.push({id:code(fn0)+'-REQ-'+String(S.task.length+1).padStart(3,'0'),fn:fn0,inc:sel,what:w,who:$('#t-who').value.trim()||'Unassigned',pri:$('#t-pri').value,st:'Pending'});addLog(sel,`Task added: ${w}`,'Operator – Admin');save();render()},
+addtask:()=>{const w=$('#t-what').value.trim();if(!w)return toast('Describe the task first');const fn0=tab==='All'?DOM.find(vis):tab;S.task.push({id:code(fn0)+'-REQ-'+String(S.task.length+1).padStart(3,'0')+SFX(),fn:fn0,inc:sel,what:w,who:$('#t-who').value.trim()||'Unassigned',pri:$('#t-pri').value,st:'Pending'});addLog(sel,`Task added: ${w}`,'Operator – Admin');save();render()},
 send:()=>{const v=$('#cm').value.trim();if(!v)return;(S.chat[sel]=S.chat[sel]||[]).push({by:'Operator – Admin',txt:v,t:ago(0)});save();render();$('#cm').focus()},
 bcast:()=>{const v=$('#bc').value.trim();if(!v)return toast('Write a broadcast first');S.bc.unshift({t:ago(0),txt:v,by:'Operator – Admin'});save();toast('Broadcast sent to all teams');render()},
-reset:()=>{try{localStorage.removeItem(KEY)}catch(e){}S=seed();ensureDom();sel=S.inc[0].id;view='inc';render();toast('Demo data reset')}};
+reset:()=>{try{localStorage.removeItem(KEY)}catch(e){}S=seed();ensureDom();S.ep=Date.now();snap();sel=S.inc[0].id;view='inc';render();toast('Demo data reset')}};
 document.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(a&&a.dataset.a!=='chk'&&A[a.dataset.a])A[a.dataset.a](a)});
 document.addEventListener('change',e=>{if(e.target.id==='pick'){sel=e.target.value;render()}else if(e.target.id==='role'){S.role=e.target.value;dd=[];const v=R().v;if(v&&!v.includes(view))view=v[0];if(sel!=='PREP'&&!INC().some(i=>i.id===sel)){const o=INC()[0];sel=o?o.id:'PREP'}save();render()}else if(e.target.id==='scn'){A.scn(e.target)}else if(e.target.id==='nd'){nf.t=$('#nt').value;nf.l=$('#nl2').value;nd=e.target.value;render()}else if(e.target.dataset.a==='chk')A.chk(e.target)});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='cm')A.send();else if(e.target.dataset.a==='selinc'||e.target.dataset.a==='cat')A[e.target.dataset.a](e.target)}});
-render();
+render();if(SY.url)connect();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>
